@@ -1,0 +1,2547 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memorex Interativo — Clínica Cirúrgica I (PR2)</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            medical: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Estilos customizados para scrollbars e impressão */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.7);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.25s ease-out forwards;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+      }
+      .print-expand {
+        display: block !important;
+      }
+      .shadow-sm, .shadow-md, .shadow-lg {
+        box-shadow: none !important;
+      }
+      .border {
+        border-color: #cbd5e1 !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 min-h-screen flex flex-col">
+
+  <!-- CABEÇALHO PRINCIPAL -->
+  <header class="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        
+        <!-- Logo e Título -->
+        <div class="flex items-start sm:items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-sky-600 to-teal-600 flex items-center justify-center text-white shadow-md shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider rounded-md bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-300">MDS0032 • 5º Período</span>
+              <span class="px-2 py-0.5 text-[11px] font-semibold rounded-md bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300">Manual Oficial PR2</span>
+            </div>
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-0.5">
+              Clínica Cirúrgica I — Revisão Interativa PR2
+            </h1>
+          </div>
+        </div>
+
+        <!-- Barra de Progresso Global + Botões de Ação -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <!-- Indicadores de Progresso -->
+          <div class="flex items-center gap-4 bg-slate-100 dark:bg-slate-800/80 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700">
+            <div class="min-w-[115px]">
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span class="text-slate-600 dark:text-slate-300">Questões</span>
+                <span id="global-q-text" class="text-emerald-600 dark:text-emerald-400 font-mono">0/50</span>
+              </div>
+              <div class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div id="global-q-bar" class="h-full bg-emerald-500 transition-all duration-300 rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="h-7 w-px bg-slate-300 dark:bg-slate-700"></div>
+            <div class="min-w-[115px]">
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span class="text-slate-600 dark:text-slate-300">Casos</span>
+                <span id="global-c-text" class="text-sky-600 dark:text-sky-400 font-mono">0/25</span>
+              </div>
+              <div class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div id="global-c-bar" class="h-full bg-sky-500 transition-all duration-300 rounded-full" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botões Utilitários -->
+          <div class="flex items-center gap-2 no-print">
+            <button id="btn-theme" type="button" title="Alternar Tema Claro/Escuro"
+              class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition flex items-center justify-center gap-1.5 text-xs font-semibold">
+              <span id="theme-icon">🌙</span>
+              <span class="hidden md:inline" id="theme-label">Escuro</span>
+            </button>
+
+            <button id="btn-print" type="button" title="Imprimir ou Salvar como PDF"
+              class="px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5 text-xs font-semibold">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              </svg>
+              <span>Imprimir / PDF</span>
+            </button>
+
+            <button id="btn-reset-all" type="button" title="Resetar todo o progresso"
+              class="p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/70 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-300 transition flex items-center gap-1 text-xs font-semibold">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span class="hidden sm:inline">Zerar</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- NAVEGAÇÃO DAS 5 UNIDADES -->
+    <nav class="bg-slate-100/80 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 no-print">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div id="unit-nav" class="flex overflow-x-auto gap-2 py-2.5 no-scrollbar">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    
+    <!-- Banner da Unidade Ativa -->
+    <div id="unit-header-card" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-sm mb-6">
+      <!-- Renderizado dinamicamente via JS -->
+    </div>
+
+    <!-- Sub-abas da Unidade (Resumo / Casos / Questões) -->
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6 no-print">
+      <div id="subtab-nav" class="inline-flex flex-wrap gap-2 bg-slate-200/70 dark:bg-slate-800/90 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700 w-full sm:w-auto">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+
+      <!-- Busca rápida na unidade (apenas no resumo) -->
+      <div id="summary-search-box" class="relative w-full sm:w-72">
+        <input type="text" id="summary-filter-input" placeholder="Filtrar tópicos no resumo..."
+          class="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Área Dinâmica do Conteúdo da Sub-aba -->
+    <section id="content-area" class="animate-fade-in">
+      <!-- Renderizado dinamicamente via JS -->
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-5 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
+      <p><strong>Memorex Interativo — Clínica Cirúrgica I (PR2)</strong> • Baseado no Manual do Aluno (5º Período) & Tratados de Cirurgia (Sabiston / Townsend).</p>
+      <p>Progresso salvo automaticamente no navegador.</p>
+    </div>
+  </footer>
+
+  <!-- MODAL DE CONFIRMAÇÃO CUSTOMIZADO (SEM ALERT/CONFIRM NATIVO) -->
+  <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl animate-fade-in">
+      <div class="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3">
+        <div class="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-950 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h3 id="modal-title" class="text-lg font-bold text-slate-900 dark:text-white">Confirmar Ação</h3>
+      </div>
+      <p id="modal-message" class="text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+        Tem certeza que deseja resetar o progresso?
+      </p>
+      <div class="flex justify-end gap-3">
+        <button id="modal-cancel" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          Cancelar
+        </button>
+        <button id="modal-confirm" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-sm transition">
+          Confirmar Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast-box" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-900 dark:bg-slate-800 text-white text-sm font-medium shadow-xl border border-slate-700 animate-fade-in">
+    <span id="toast-icon">✅</span>
+    <span id="toast-msg">Ação realizada!</span>
+  </div>
+
+  <!-- DADOS COMPLETOS E MOTOR DA APLICAÇÃO -->
+  <script>
+    // ============================================================================
+    // BANCO DE CONTEÚDO MÉDICO COMPLETO (5 UNIDADES • 25 CASOS • 50 QUESTÕES)
+    // ============================================================================
+    const CURRICULUM_DATA = [
+      // --------------------------------------------------------------------------
+      // UNIDADE 9: HÉRNIAS DA PAREDE ABDOMINAL (19/10)
+      // --------------------------------------------------------------------------
+      {
+        id: 'u9',
+        shortTitle: 'Unidade 9',
+        title: 'Unidade 9: Hérnias da Parede Abdominal',
+        date: '19/10',
+        subtitle: 'Anatomia da região inguinofemoral, classificações (Nyhus), hérnias especiais e técnicas cirúrgicas abertas e vídeo-assistidas.',
+        topics: ['Trígono de Hasselbach & Fruchaud', 'Classificação de Nyhus', 'Hérnias Especiais', 'Lichtenstein, McVay, Shouldice', 'TAPP, TEP & Rives-Stoppa'],
+        summarySections: [
+          {
+            title: '1. Anatomia Cirúrgica da Região Inguinofemoral',
+            badge: 'Anatomia Essencial',
+            color: 'sky',
+            content: `
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-sky-700 dark:text-sky-400 mb-2">📐 Trígono de Hasselbach (Hérnia Direta)</h4>
+                  <ul class="space-y-1.5 text-sm text-slate-700 dark:text-slate-300">
+                    <li><strong>Limite Medial:</strong> Borda lateral do músculo reto abdominal (bainha do reto).</li>
+                    <li><strong>Limite Lateral:</strong> Vasos epigástricos inferiores (marco anatômico que separa hérnia direta de indireta).</li>
+                    <li><strong>Limite Inferior:</strong> Ligamento inguinal (Poupart).</li>
+                    <li><strong>Assoalho:</strong> Fáscia transversalis (parede posterior do canal inguinal).</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-teal-700 dark:text-teal-400 mb-2">🛡️ Orifício Miopectíneo de Fruchaud</h4>
+                  <p class="text-sm text-slate-700 dark:text-slate-300 mb-2">Área única de fraqueza da parede abdominal onde ocorrem todas as hérnias inguinais e femorais, dividida pelo ligamento inguinal em porção suprainguinal (inguinais) e infrainguinal (femoral).</p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400"><strong>Limites:</strong> Superior (arco do transverso e oblíquo interno), Medial (reto abdominal), Lateral (músculo iliopsoas), Inferior (ramo superior do púbis / ligamento pectíneo de Cooper).</p>
+                </div>
+              </div>
+              <div class="mt-4 p-4 rounded-xl bg-rose-50/80 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
+                <h4 class="font-bold text-rose-800 dark:text-rose-300 mb-2">⚠️ Triângulos Perigosos na Laparoscopia (TAPP / TEP) — Nunca Grampear!</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <strong class="text-rose-700 dark:text-rose-400">Triângulo da Desgraça (Doom):</strong>
+                    <p class="text-slate-700 dark:text-slate-300">Delimitado medialmente pelo <em>ducto deferente</em> e lateralmente pelos <em>vasos espermáticos/gonadais</em>. Contém os <strong>vasos ilíacos externos</strong> (risco de hemorragia catastrófica).</p>
+                  </div>
+                  <div>
+                    <strong class="text-amber-700 dark:text-amber-400">Triângulo da Dor (Pain):</strong>
+                    <p class="text-slate-700 dark:text-slate-300">Inferior ao trato iliopúbico e lateral aos vasos espermáticos. Contém os nervos <strong>cutâneo femoral lateral</strong>, <strong>ramo femoral do genitofemoral</strong> e <strong>nervo femoral</strong> (risco de neuralgia crônica/meralgia parestésica).</p>
+                  </div>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '2. Tipos de Hérnias Inguinofemorais & Classificação de Nyhus',
+            badge: 'Clássico de Prova',
+            color: 'indigo',
+            content: `
+              <div class="overflow-x-auto mb-4">
+                <table class="w-full text-sm text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-700">
+                      <th class="p-3 font-bold">Tipo de Hérnia</th>
+                      <th class="p-3 font-bold">Relação Anatômica</th>
+                      <th class="p-3 font-bold">Fisiopatologia & Epidemiologia</th>
+                      <th class="p-3 font-bold">Exame Físico (Manobra de Landivar)</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                    <tr>
+                      <td class="p-3 font-semibold text-sky-700 dark:text-sky-400">Inguinal Indireta</td>
+                      <td class="p-3"><strong>Lateral</strong> aos vasos epigástricos inferiores (anel inguinal interno)</td>
+                      <td class="p-3"><strong>Mais comum em ambos os sexos</strong> (inclusive mulheres!). Congênita (persistência do conduto peritoniovaginal). Maior número absoluto de encarceramentos.</td>
+                      <td class="p-3">Toca a <strong>ponta</strong> do dedo examinador no canal inguinal.</td>
+                    </tr>
+                    <tr>
+                      <td class="p-3 font-semibold text-teal-700 dark:text-teal-400">Inguinal Direta</td>
+                      <td class="p-3"><strong>Medial</strong> aos vasos epigástricos inferiores (Trígono de Hasselbach)</td>
+                      <td class="p-3">Adquirida por enfraquecimento da parede posterior (fáscia transversalis). Mais comum em homens idosos/tabagistas/DPOC. Menor risco de estrangulamento (colo largo).</td>
+                      <td class="p-3">Toca a <strong>polpa/face lateral</strong> do dedo examinador.</td>
+                    </tr>
+                    <tr>
+                      <td class="p-3 font-semibold text-rose-700 dark:text-rose-400">Femoral (Crural)</td>
+                      <td class="p-3"><strong>Abaixo</strong> do ligamento inguinal, <strong>medial</strong> à veia femoral</td>
+                      <td class="p-3">Mais frequente em <strong>mulheres</strong> (proporcionalmente, ainda que a indireta seja a mais comum no sexo feminino). <strong>Maior taxa percentual de encarceramento e estrangulamento</strong> (anel rígido).</td>
+                      <td class="p-3">Abaulamento abaixo do ligamento inguinal, inferolateral ao tubérculo púbico.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="p-4 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60">
+                <h4 class="font-bold text-indigo-800 dark:text-indigo-300 mb-2">📋 Classificação de Nyhus (Memorize!)</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-sm">
+                  <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900">
+                    <span class="font-bold text-indigo-600 dark:text-indigo-400">Tipo I:</span> Indireta com anel inguinal interno <strong>normal</strong> (típica pediátrica).
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900">
+                    <span class="font-bold text-indigo-600 dark:text-indigo-400">Tipo II:</span> Indireta com anel interno <strong>dilatado</strong>, mas parede posterior íntegra.
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900">
+                    <span class="font-bold text-indigo-600 dark:text-indigo-400">Tipo IIIA:</span> Hérnia inguinal <strong>Direta</strong> (defeito na parede posterior).
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900">
+                    <span class="font-bold text-indigo-600 dark:text-indigo-400">Tipo IIIB:</span> Indireta com <strong>destruição da parede posterior</strong>, inguinoescrotal, deslizamento ou <strong>mista (em pantalona)</strong>.
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900">
+                    <span class="font-bold text-indigo-600 dark:text-indigo-400">Tipo IIIC:</span> Hérnia <strong>Femoral</strong>.
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900">
+                    <span class="font-bold text-indigo-600 dark:text-indigo-400">Tipo IV:</span> Hérnia <strong>Recidivada</strong> (IVA: direta | IVB: indireta | IVC: femoral | IVD: mista).
+                  </div>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '3. Hérnias Especiais & Epônimos Cobrados em Prova',
+            badge: 'Memorex Rápido',
+            color: 'amber',
+            content: `
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
+                  <div class="font-bold text-amber-800 dark:text-amber-300">Hérnia de Richter</div>
+                  <p class="text-slate-700 dark:text-slate-300 mt-1">Pinçamento apenas da <strong>borda antimesentérica</strong> da alça intestinal. Evolui para isquemia/necrose e perfuração <strong>sem causar obstrução intestinal completa</strong>.</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
+                  <div class="font-bold text-amber-800 dark:text-amber-300">Hérnia de Littré</div>
+                  <p class="text-slate-700 dark:text-slate-300 mt-1">Saco herniário que contém um <strong>Divertículo de Meckel</strong> (anomalia congênita mais comum do TGI).</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
+                  <div class="font-bold text-amber-800 dark:text-amber-300">Hérnia de Amyand vs Garengeot</div>
+                  <p class="text-slate-700 dark:text-slate-300 mt-1"><strong>Amyand:</strong> Apêndice cecal dentro de hérnia <em>inguinal</em> (A = Inguinal).<br><strong>Garengeot:</strong> Apêndice cecal dentro de hérnia <em>femoral</em>.</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
+                  <div class="font-bold text-amber-800 dark:text-amber-300">Hérnia de Spiegel</div>
+                  <p class="text-slate-700 dark:text-slate-300 mt-1">Ocorre na <strong>linha semilunar</strong> (borda lateral do reto abdominal), geralmente abaixo da linha arqueada de Douglas. Hérnia interparietal de difícil palpação.</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
+                  <div class="font-bold text-amber-800 dark:text-amber-300">Hérnias Lombares</div>
+                  <p class="text-slate-700 dark:text-slate-300 mt-1"><strong>Grynfeltt:</strong> Triângulo lombar <em>superior</em> (mais comum).<br><strong>Petit:</strong> Triângulo lombar <em>inferior</em> (borda da crista ilíaca).</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
+                  <div class="font-bold text-amber-800 dark:text-amber-300">Hérnia por Deslizamento</div>
+                  <p class="text-slate-700 dark:text-slate-300 mt-1">A própria víscera retroperitoneal (ex: ceco à direita, sigmoide à esquerda ou bexiga) compõe parte da parede do saco herniário.</p>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '4. Técnicas Cirúrgicas: Convencionais, Vídeo-Assistidas e Incisionais',
+            badge: 'Conduta Cirúrgica',
+            color: 'emerald',
+            content: `
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-slate-900 dark:text-white mb-2">🧵 Abordagem Anterior Com Tensão (Teciduais)</h4>
+                  <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                    <li><strong>Bassini:</strong> Sutura do tendão conjunto (oblíquo interno + transverso) ao ligamento inguinal.</li>
+                    <li><strong>McVay:</strong> Sutura do tendão conjunto ao <strong>ligamento pectíneo de Cooper</strong>. Única técnica tecidual anterior que corrige <strong>hérnia femoral</strong> (exige incisão relaxadora).</li>
+                    <li><strong>Shouldice:</strong> Imbricação em <strong>4 planos</strong> da fáscia transversalis e tendão conjunto. Menor taxa de recidiva entre as técnicas sem tela (~1-2%).</li>
+                  </ul>
+                </div>
+
+                <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60">
+                  <h4 class="font-bold text-emerald-800 dark:text-emerald-300 mb-2">🛡️ Abordagem Livre de Tensão (Tension-Free)</h4>
+                  <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                    <li><strong>Lichtenstein:</strong> <strong>Padrão-ouro por via aberta</strong>. Colocação de tela de polipropileno sobre a parede posterior, fixada ao tubérculo púbico, ligamento inguinal e tendão conjunto.</li>
+                    <li><strong>Stoppa (GPRVS):</strong> Tela gigante pré-peritoneal por incisão mediana infraumbilical recobrindo ambos os orifícios miopectíneos.</li>
+                    <li><strong>Plug & Patch (Rutkow-Robbins):</strong> Cone de tela no anel interno + tela plana posterior.</li>
+                  </ul>
+                </div>
+
+                <div class="p-4 rounded-xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60">
+                  <h4 class="font-bold text-sky-800 dark:text-sky-300 mb-2">📹 Vídeo-Assistidas & Incisionais</h4>
+                  <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                    <li><strong>TAPP (Transabdominal Pré-Peritoneal):</strong> Entra na cavidade peritoneal e abre o peritônio para posicionar a tela no espaço pré-peritoneal.</li>
+                    <li><strong>TEP (Totalmente Extraperitoneal):</strong> Disseca diretamente o espaço pré-peritoneal sem entrar na cavidade abdominal.</li>
+                    <li><strong>Indicação Preferencial VLP:</strong> Hérnias <strong>bilaterais</strong> e <strong>recidivadas</strong> após acesso anterior.</li>
+                    <li><strong>Incisionais Complexas:</strong> <strong>Rives-Stoppa</strong> (tela no espaço retromuscular, anterior à bainha posterior do reto) + <strong>TAR</strong> (liberação do transverso abdominal).</li>
+                  </ul>
+                </div>
+              </div>
+            `
+          }
+        ],
+        cases: [
+          {
+            id: 'u9_c1',
+            title: 'Caso 1 — Hérnia Inguinal Estrangulada em Adulto Jovem',
+            tags: ['Urgência Cirúrgica', 'Estrangulamento', 'Uso de Tela'],
+            vignette: 'Homem de 29 anos, pedreiro, dá entrada no pronto-socorro com dor intensa e abaulamento endurecido e irredutível em região inguinoescrotal direita há 8 horas, acompanhado de náuseas, vômitos biliosos e febre (38,2 °C). Relata que o abaulamento surgia aos esforços há 2 anos, mas sempre reduzia espontaneamente. Exame físico: PA 110x70 mmHg, FC 114 bpm, abdome distendido, ruídos hidroaéreos metálicos, abaulamento inguinoescrotal direito hiperemiado, quente e extremamente doloroso à palpação.',
+            diagnosis: 'Hérnia inguinal indireta à direita estrangulada (Nyhus IIIB) cursando com abdome agudo obstrutivo. A hiperemia local, febre, taquicardia e tempo de evolução (> 6h) indicam sofrimento vascular (isquemia/necrose) do conteúdo herniário, contraindicando absolutamente manobras de redução manual (taxe).',
+            conduct: 'Inguinotomia exploradora de urgência (após hidratação, antibioticoterapia venosa e sonda nasogástrica). Avaliar viabilidade da alça intestinal após abertura do saco herniário e liberação do anel constritor. Se a alça recuperar peristalse e coloração (viável), realiza-se hernioplastia à Lichtenstein. Caso haja necrose intestinal exigindo enterectomia com anastomose primária (campo contaminado/sujo), evita-se tela sintética inabsorvível pelo alto risco de infecção, optando-se por reparo tecidual (Shouldice ou McVay) ou tela biológica.'
+          },
+          {
+            id: 'u9_c2',
+            title: 'Caso 2 — Mulher Idosa com Obstrução Intestinal e Abaulada Crural',
+            tags: ['Hérnia Femoral', 'Nyhus IIIC', 'Técnica de McVay'],
+            vignette: 'Mulher de 76 anos, multípara, emagrecida (IMC 18,5 kg/m²), procura atendimento com parada de eliminação de gases e fezes há 48 horas, vômitos fecaloides e distensão abdominal importante. Ao exame físico, observa-se pequeno abaulamento tenso, doloroso, de cerca de 3 cm, localizado na raiz da coxa direita, abaixo da prega inguinal e inferolateral ao tubérculo púbico. Radiografia de abdome mostra níveis hidroaéreos em degrau no intestino delgado.',
+            diagnosis: 'Hérnia femoral (crural) encarcerada à direita (Nyhus IIIC) provocando obstrução mecânica de intestino delgado. As hérnias femorais ocorrem através do canal femoral (abaixo do ligamento inguinal, medialmente à veia femoral) e são mais comuns em mulheres idosas e multíparas, apresentando a maior taxa relativa de encarceramento e estrangulamento devido à rigidez do anel femoral.',
+            conduct: 'Cirurgia de urgência (inguinotomia ou laparotomia infraumbilical em caso de sofrimento intestinal franco). Após redução/ressecção do conteúdo, a correção anatômica pode ser feita pelo fechamento do canal femoral suturando o tendão conjunto ao ligamento pectíneo de Cooper (Técnica de McVay) ou pela aposição de tela (plug femoral ou via pré-peritoneal). Dica de prova: McVay é a única técnica tecidual anterior que repara tanto hérnias inguinais quanto femorais.'
+          },
+          {
+            id: 'u9_c3',
+            title: 'Caso 3 — Dor Localizada sem Obstrução Intestinal Completa',
+            tags: ['Hérnia de Richter', 'Borda Antimesentérica'],
+            vignette: 'Mulher de 68 anos retorna ao ambulatório 4 dias após início de dor localizada em região femoral esquerda. Nega parada de eliminação de flatos ou fezes, evacuando normalmente até hoje pela manhã, embora apresente náuseas leves e febrícula. Ao exame, nota-se pequena tumoração de 2 cm abaixo do ligamento inguinal esquerdo com hiperemia cutânea discreta. Tomografia computadorizada evidencia pinçamento parcial da parede lateral de uma alça de íleo no canal femoral, mantendo permeabilidade parcial da luz intestinal.',
+            diagnosis: 'Hérnia de Richter estrangulada. Caracteriza-se pelo encarceramento apenas da borda antimesentérica da alça intestinal dentro de um anel herniário estreito (frequentemente femoral ou trocater laparoscópico). Como não há oclusão circunferencial completa da luz, o paciente mantém trânsito intestinal, retardando o diagnóstico e levando rapidamente à gangrena e perfuração.',
+            conduct: 'Exploração cirúrgica imediata! Nunca tentar redução sem visualização direta da alça, pois a porção antimesentérica pinçada frequentemente já se encontra necrótica e pode perfurar dentro da cavidade peritoneal (redução em massa com peritonite fecal). Realiza-se ressecção em cunha ou enterectomia segmentar se houver necrose.'
+          },
+          {
+            id: 'u9_c4',
+            title: 'Caso 4 — Hérnia Inguinal Bilateral Recidivada',
+            tags: ['Nyhus IV', 'TAPP / TEP', 'Videolaparoscopia'],
+            vignette: 'Homem de 54 anos, executivo, submetido há 6 anos à herniorrafia inguinal bilateral por via aberta (técnica de Bassini). Retorna queixando-se de abaulamento bilateral redutível aos esforços em ambas as regiões inguinais há 1 ano, causando desconforto durante atividade física. Sem sinais de encarceramento. Exame físico confirma recidiva herniária bilateral (direta à direita e indireta à esquerda).',
+            diagnosis: 'Hérnia inguinal bilateral recidivada (Nyhus Tipo IV — IVA à direita e IVB à esquerda). A reabordagem pela mesma via anterior previamente operada implica em fibrose intensa, distorção anatômica e risco elevado de lesão do funículo espermático (orquite isquêmica) e dos nervos inguinais (ilioinguinal, ilio-hipogástrico).',
+            conduct: 'Hernioplastia videolaparoscópica (TAPP — Transabdominal Pré-Peritoneal ou TEP — Totalmente Extraperitoneal). Segundo as diretrizes internacionais (HerniaSurge), hérnias inguinais bilaterais e hérnias recidivadas após reparo anterior têm indicação formal e preferencial de abordagem posterior minimamente invasiva, operando em plano anatômico virgem e cobrindo ambos os orifícios miopectíneos de Fruchaud.'
+          },
+          {
+            id: 'u9_c5',
+            title: 'Caso 5 — Hérnia Incisional Gigante da Linha Média',
+            tags: ['Hérnia Incisional', 'Rives-Stoppa', 'TAR'],
+            vignette: 'Homem de 61 anos, submetido há 2 anos à laparotomia exploradora de urgência por trauma abdominal que evoluiu com infecção de sítio cirúrgico profunda no pós-operatório. Apresenta grande abaulamento mediano redutível que piora à manobra de Valsalva. TC de abdome revela defeito aponeurótico na linha média de 11 cm de largura transversal, com musculatura reta abdominal íntegra, porém lateralizada.',
+            diagnosis: 'Hérnia incisional mediana complexa (defeito > 10 cm segundo classificação da European Hernia Society - EHS), decorrente de infecção de ferida operatória prévia.',
+            conduct: 'Preparo pré-operatório (perda ponderal, cessação do tabagismo, eventual aplicação de toxina botulínica A ou pneumoperitônio progressivo se perda de domicílio) seguido de hernioplastia incisional pela técnica de Rives-Stoppa (posicionamento de tela de polipropileno de grandes poros no espaço retromuscular, posterior ao músculo reto e anterior à sua bainha posterior) associada à Separação Posterior de Componentes com liberação do músculo transverso do abdome (TAR) para fechamento da linha média sem tensão.'
+          }
+        ],
+        questions: [
+          {
+            id: 'u9_q1',
+            question: 'Durante uma hernioplastia inguinal aberta, o cirurgião identifica o saco herniário emergindo medialmente aos vasos epigástricos inferiores, através de uma área de fraqueza da fáscia transversalis. Os limites anatômicos dessa região (Trígono de Hasselbach) são:',
+            options: [
+              'Borda lateral do músculo reto abdominal, vasos epigástricos inferiores e ligamento inguinal.',
+              'Borda medial do músculo reto abdominal, vasos ilíacos externos e ligamento de Cooper.',
+              'Tendão conjunto, vasos epigástricos superiores e trato iliopúbico.',
+              'Músculo iliopsoas, ducto deferente e vasos espermáticos.',
+              'Ligamento lacunar, veia femoral e ligamento inguinal.'
+            ],
+            correctIndex: 0,
+            explanation: 'O Trígono de Hasselbach é delimitado medialmente pela borda lateral da bainha do reto abdominal, lateralmente pelos vasos epigástricos inferiores e inferiormente pelo ligamento inguinal. As hérnias diretas (Nyhus IIIA) emergem através do seu assoalho (fáscia transversalis).'
+          },
+          {
+            id: 'u9_q2',
+            question: 'Um paciente masculino de 45 anos apresenta hérnia inguinal indireta volumosa que desce até a bolsa escrotal, acompanhada de destruição significativa da parede posterior do canal inguinal. Segundo a Classificação de Nyhus, essa hérnia é categorizada como:',
+            options: [
+              'Tipo I',
+              'Tipo II',
+              'Tipo IIIA',
+              'Tipo IIIB',
+              'Tipo IIIC'
+            ],
+            correctIndex: 3,
+            explanation: 'Na classificação de Nyhus: Tipo I = indireta com anel interno normal; Tipo II = indireta com anel interno dilatado e parede posterior íntegra; Tipo IIIA = hérnia direta; Tipo IIIB = indireta com destruição da parede posterior, inguinoescrotal, por deslizamento ou mista (em pantalona); Tipo IIIC = hérnia femoral.'
+          },
+          {
+            id: 'u9_q3',
+            question: 'Durante a fixação da tela com grampos (tackers) em uma hernioplastia videolaparoscópica (TAPP), o cirurgião deve evitar estritamente o "Triângulo da Dor" (Pain Triangle) para não lesionar estruturas nervosas. Qual nervo encontra-se nessa região anatômica e pode causar parestesia/dor na face anterolateral da coxa se lesionado?',
+            options: [
+              'Nervo ilio-hipogástrico.',
+              'Nervo cutâneo femoral lateral.',
+              'Nervo pudendo interno.',
+              'Nervo obturatório.',
+              'Nervo subcostal.'
+            ],
+            correctIndex: 1,
+            explanation: 'O Triângulo da Dor situa-se inferiormente ao trato iliopúbico e lateralmente aos vasos espermáticos. Ele abriga os nervos cutâneo femoral lateral (cuja lesão causa meralgia parestésica), ramo femoral do nervo genitofemoral e nervo femoral.'
+          },
+          {
+            id: 'u9_q4',
+            question: 'Em relação à epidemiologia e às complicações das hérnias inguinofemorais, assinale a alternativa CORRETA:',
+            options: [
+              'A hérnia femoral é o tipo mais comum de hérnia na mulher.',
+              'A hérnia inguinal direta apresenta maior risco de estrangulamento do que a indireta por possuir anel herniário estreito.',
+              'A hérnia inguinal indireta é a mais comum em ambos os sexos, mas a hérnia femoral apresenta a maior taxa percentual de encarceramento e estrangulamento.',
+              'As hérnias inguinais ocorrem mais frequentemente à esquerda devido à descida mais tardia do testículo esquerdo.',
+              'A manobra de Landivar positiva na polpa digital caracteriza a hérnia inguinal indireta.'
+            ],
+            correctIndex: 2,
+            explanation: 'Embora a hérnia femoral seja proporcionalmente mais frequente em mulheres do que em homens, a hérnia inguinal indireta ainda é a mais comum em ambos os sexos. Contudo, a hérnia femoral possui o maior risco relativo (~30-40%) de encarceramento/estrangulamento devido à rigidez do anel femoral.'
+          },
+          {
+            id: 'u9_q5',
+            question: 'Qual técnica cirúrgica de reparo tecidual (sem tela) por via anterior utiliza a sutura do tendão conjunto ao ligamento pectíneo de Cooper, sendo a única abordagem tecidual anterior eficaz para corrigir hérnias femorais?',
+            options: [
+              'Técnica de Bassini.',
+              'Técnica de Lichtenstein.',
+              'Técnica de McVay.',
+              'Técnica de Shouldice.',
+              'Técnica de Rives-Stoppa.'
+            ],
+            correctIndex: 2,
+            explanation: 'A técnica de McVay ancora o arco aponeurótico do transverso/tendão conjunto diretamente ao ligamento de Cooper, obliterando tanto o assoalho inguinal quanto o canal femoral. Bassini e Shouldice suturam ao ligamento inguinal/trato iliopúbico e não cobrem o canal femoral.'
+          },
+          {
+            id: 'u9_q6',
+            question: 'Uma paciente de 72 anos apresenta quadro de hérnia femoral encarcerada. Na cirurgia, constata-se que apenas a borda antimesentérica do íleo distal está pinçada e isquêmica, mantendo a continuidade parcial da luz intestinal. Essa entidade clínica é denominada:',
+            options: [
+              'Hérnia de Littré.',
+              'Hérnia de Amyand.',
+              'Hérnia de Richter.',
+              'Hérnia de Spiegel.',
+              'Hérnia de Garengeot.'
+            ],
+            correctIndex: 2,
+            explanation: 'Hérnia de Richter é o pinçamento exclusivo da borda antimesentérica da alça intestinal, evoluindo para necrose e perfuração sem obstrução intestinal completa. Littré contém divertículo de Meckel; Amyand contém apêndice no canal inguinal; Garengeot contém apêndice na hérnia femoral.'
+          },
+          {
+            id: 'u9_q7',
+            question: 'Sobre a Hérnia de Spiegel, assinale a afirmação verdadeira:',
+            options: [
+              'Ocorre no triângulo lombar inferior, logo acima da crista ilíaca.',
+              'Ocorre através da linha semilunar (borda lateral do músculo reto abdominal), mais frequentemente abaixo da linha arqueada de Douglas.',
+              'Representa o encarceramento do apêndice cecal no interior do canal inguinal.',
+              'É uma hérnia diafragmática congênita posterolateral esquerda.',
+              'Surge exclusivamente na linha alba acima da cicatriz umbilical.'
+            ],
+            correctIndex: 1,
+            explanation: 'A hérnia de Spiegel ocorre através da fáscia spigeliana (entre a borda lateral do músculo reto abdominal e a linha semilunar), predominantemente na região infraumbilical abaixo da linha arqueada de Douglas, onde não há bainha posterior do reto.'
+          },
+          {
+            id: 'u9_q8',
+            question: 'De acordo com as diretrizes atuais para o tratamento cirúrgico das hérnias inguinais em adultos, qual é a principal indicação preferencial para as técnicas videolaparoscópicas (TAPP ou TEP)?',
+            options: [
+              'Hérnia inguinal unilateral primária encarcerada com necrose entérica.',
+              'Hérnia inguinal bilateral e hérnia recidivada após abordagem prévia por via anterior.',
+              'Hérnia inguinal indireta Nyhus Tipo I em crianças de 2 anos.',
+              'Pacientes com contraindicação absoluta à anestesia geral.',
+              'Hérnia inguinoescrotal gigante irredutível com perda de domicílio.'
+            ],
+            correctIndex: 1,
+            explanation: 'As abordagens laparoscópicas (TAPP e TEP) são preferenciais nas hérnias bilaterais (permitem correção bilateral pelos mesmos portais com menor dor e retorno precoce) e nas recidivadas após reparo anterior (evitam o tecido cicatricial prévio).'
+          },
+          {
+            id: 'u9_q9',
+            question: 'No reparo aberto livre de tensão pela técnica de Lichtenstein (padrão-ouro por via anterior), onde a tela sintética de polipropileno deve ser posicionada?',
+            options: [
+              'No espaço pré-peritoneal, entre o peritônio e a fáscia transversalis.',
+              'No espaço retromuscular, posterior ao músculo reto abdominal.',
+              'Sobre a parede posterior do canal inguinal (fáscia transversalis), por baixo da aponeurose do músculo oblíquo externo.',
+              'No tecido celular subcutâneo, acima da aponeurose do oblíquo externo.',
+              'Intra-abdominal, em contato direto com as alças intestinais.'
+            ],
+            correctIndex: 2,
+            explanation: 'Na técnica de Lichtenstein, abre-se a aponeurose do oblíquo externo e fixa-se a tela de polipropileno diretamente sobre o assoalho inguinal (fáscia transversalis), cobrindo o trígono de Hasselbach e criando um novo anel inguinal interno para passagem do funículo espermático.'
+          },
+          {
+            id: 'u9_q10',
+            question: 'Durante uma hernioplastia laparoscópica TEP, a dissecção inadvertida do "Triângulo da Desgraça" (Triangle of Doom) coloca em risco imediato de lesão:',
+            options: [
+              'Os vasos epigástricos inferiores.',
+              'Os vasos ilíacos externos.',
+              'A artéria pudenda interna.',
+              'O nervo ilioinguinal.',
+              'A artéria mesentérica inferior.'
+            ],
+            correctIndex: 1,
+            explanation: 'O Triângulo da Desgraça (delimitado medialmente pelo ducto deferente e lateralmente pelos vasos gonadais) contém a artéria e a veia ilíacas externas. Qualquer dissecção profunda ou grampeamento nessa zona pode causar hemorragia grave.'
+          }
+        ]
+      },
+
+      // --------------------------------------------------------------------------
+      // UNIDADE 10: ABDOME AGUDO INFLAMATÓRIO, OBSTRUTIVO E VASCULAR (26/10)
+      // --------------------------------------------------------------------------
+      {
+        id: 'u10',
+        shortTitle: 'Unidade 10',
+        title: 'Unidade 10: Abdome Agudo Inflamatório, Obstrutivo e Vascular',
+        date: '26/10',
+        subtitle: 'Fisiopatologia da dor abdominal, apendicite, colecistite (TG18), diverticulite (Hinchey), úlcera perfurada, bridas e isquemia mesentérica.',
+        topics: ['Dor Visceral vs Somática', 'Apendicite & Alvarado', 'Colecistite TG18 & Mirizzi', 'Diverticulite (Hinchey)', 'Úlcera Perfurada, Bridas & Isquemia'],
+        summarySections: [
+          {
+            title: '1. Fisiopatologia da Dor Abdominal & Classificação Sindrômica',
+            badge: 'Bases Clínicas',
+            color: 'sky',
+            content: `
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-sky-700 dark:text-sky-400 mb-1.5">🧠 Dor Visceral</h4>
+                  <p class="text-slate-700 dark:text-slate-300">Conduzida por <strong>fibras tipo C</strong> (não mielinizadas, lentas). Estímulo: distensão, espasmo ou isquemia visceral. <strong>Mal localizada</strong>, sentida na linha média conforme origem embriológica:</p>
+                  <ul class="mt-2 space-y-1 text-xs text-slate-600 dark:text-slate-400">
+                    <li>• <strong>Intestino Anterior</strong> (estômago, duodeno, fígado, pâncreas): Epigástrio.</li>
+                    <li>• <strong>Intestino Médio</strong> (delgado, apêndice, cólon direito): Periumbilical.</li>
+                    <li>• <strong>Intestino Posterior</strong> (cólon esquerdo, sigmoide, reto): Hipogástrio.</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-rose-700 dark:text-rose-400 mb-1.5">⚡ Dor Parietal (Somática)</h4>
+                  <p class="text-slate-700 dark:text-slate-300">Conduzida por <strong>fibras A-delta</strong> (mielinizadas, rápidas). Estímulo: irritação direta do peritônio parietal. <strong>Bem localizada</strong>, intensa, piora com tosse/movimento e gera defesa/descompressão brusca dolorosa.</p>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-amber-700 dark:text-amber-400 mb-1.5">🎯 Dor Referida & 5 Síndromes</h4>
+                  <p class="text-slate-700 dark:text-slate-300 mb-2">Percebida à distância por convergência de dermátomos (ex: <strong>Sinal de Kehr</strong> — dor no ombro esquerdo por irritação diafragmática/hemoperitônio esplênico).</p>
+                  <p class="text-xs font-semibold text-slate-800 dark:text-slate-200">5 Síndromes: Inflamatório, Obstrutivo, Perfurativo, Vascular e Hemorrágico.</p>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '2. Apendicite Aguda & Colecistite Aguda (Critérios de Tóquio TG18)',
+            badge: 'Alta Incidência',
+            color: 'teal',
+            content: `
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800/60">
+                  <h4 class="font-bold text-teal-800 dark:text-teal-300 mb-2">🩺 Apendicite Aguda</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Etiologia:</strong> Obstrução luminal (<strong>fecalito</strong> em adultos; <strong>hiperplasia linfoide</strong> em crianças/jovens).</li>
+                    <li><strong>Cronologia de Murphy:</strong> Dor epigástrica/periumbilical vaga &rarr; anorexia/náuseas &rarr; migração da dor para FID (ponto de McBurney) &rarr; febre baixa.</li>
+                    <li><strong>Sinais Semiológicos:</strong> <em>Blumberg</em> (descompressão dolorosa em FID), <em>Rovsing</em> (dor em FID ao comprimir FIE), <em>Psoas</em> (extensão coxa D — apêndice retrocecal), <em>Obturador</em> (rotação interna coxa D — apêndice pélvico), <em>Dunphy</em> (dor à tosse), <em>Lenander</em> (diferença temp. retal-axilar &gt; 1°C).</li>
+                    <li><strong>Escore de Alvarado (MANTRELS - 10 pts):</strong> Migração (1), Anorexia (1), Náuseas (1), Dor FID (2), Blumberg (1), Febre (1), Leucocitose (2), Desvio à esquerda (1). (&ge;7 alta probabilidade).</li>
+                    <li><strong>Conduta:</strong> Apendicectomia VLP (padrão-ouro). Se <strong>fleimão ou abscesso bloqueado &gt; 4 cm</strong> sem peritonite difusa: ATB + drenagem percutânea + apendicectomia de intervalo (6-8 sem).</li>
+                  </ul>
+                </div>
+
+                <div class="p-4 rounded-xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60">
+                  <h4 class="font-bold text-sky-800 dark:text-sky-300 mb-2">🟢 Colecistite Aguda & Vias Biliares (TG18)</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Fisiopatologia:</strong> Obstrução do ducto cístico por cálculo &rarr; estase &rarr; inflamação química e infecção secundária (<em>E. coli, Klebsiella, Enterococcus</em>).</li>
+                    <li><strong>Sinal de Murphy:</strong> Interrupção abrupta da inspiração profunda durante palpação do ponto cístico (HCD).</li>
+                    <li><strong>TG18 Diagnóstico:</strong> (A) Inflamação local (Murphy/dor HCD) + (B) Sistêmica (febre/PCR/leucocitose) + (C) USG (espessamento parede &gt; 4mm, líquido pericolecístico, Murphy ultrassonográfico).</li>
+                    <li><strong>TG18 Gravidade:</strong> <strong>Grau III</strong> (disfunção orgânica); <strong>Grau II</strong> (Leuco &gt; 18.000, massa palpável HCD, &gt; 72h, inflamação local grave); <strong>Grau I</strong> (leve).</li>
+                    <li><strong>Conduta:</strong> Colecistectomia VLP precoce (idealmente &lt; 72h) respeitando a <strong>Visão Crítica de Segurança de Strasberg</strong> (triângulo hepatocístico limpo, 1/3 inferior da vesícula descolado do leito hepático, apenas 2 estruturas entrando na vesícula).</li>
+                    <li><strong>Colangite Aguda:</strong> <em>Tríade de Charcot</em> (febre + icterícia + dor HCD) &rarr; <em>Pêntade de Reynolds</em> (+ hipotensão + confusão mental = drenagem biliar urgente via CPRE!).</li>
+                  </ul>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '3. Diverticulite Aguda (Hinchey) & Úlcera Péptica Perfurada',
+            badge: 'Abdome Agudo',
+            color: 'indigo',
+            content: `
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60">
+                  <h4 class="font-bold text-indigo-800 dark:text-indigo-300 mb-2">📌 Diverticulite Aguda (Sigmoide = "Apendicite à Esquerda")</h4>
+                  <p class="text-xs text-slate-600 dark:text-slate-400 mb-2"><strong>Padrão-ouro diagnóstico:</strong> TC de abdome com contraste. <strong>Contraindicada colonoscopia na fase aguda</strong> (risco de perfuração; fazer após 6 semanas para excluir neoplasia).</p>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Hinchey Ia:</strong> Fleimão pericólico &rarr; ATB + dieta (ou ambulatorial em selecionados).</li>
+                    <li><strong>Hinchey Ib:</strong> Abscesso pericólico (&lt; 4-5 cm ATB; &ge; 4-5 cm drenagem percutânea guiada + ATB).</li>
+                    <li><strong>Hinchey II:</strong> Abscesso pélvico / retroperitoneal à distância &rarr; Drenagem percutânea + ATB.</li>
+                    <li><strong>Hinchey III:</strong> Peritonite purulenta generalizada &rarr; Cirurgia de urgência (Cirurgia de Hartmann ou ressecção + anastomose primária com ileostomia protetora em estáveis).</li>
+                    <li><strong>Hinchey IV:</strong> Peritonite fecal generalizada &rarr; <strong>Cirurgia de Hartmann</strong> (sigmoidectomia + colostomia terminal + fechamento coto retal).</li>
+                  </ul>
+                </div>
+
+                <div class="p-4 rounded-xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
+                  <h4 class="font-bold text-rose-800 dark:text-rose-300 mb-2">🔪 Úlcera Péptica Perfurada (Abdome Agudo Perfurativo)</h4>
+                  <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                    <li><strong>Quadro Clínico:</strong> Dor epigástrica <strong>súbita em punhalada</strong> (paciente sabe a hora exata), rápida generalização da dor, <strong>abdome em tábua</strong> (contratura involuntária difusa).</li>
+                    <li><strong>Sinal de Jobert:</strong> Desaparecimento da macicez hepática à percussão (substituída por timpanismo devido ao pneumoperitônio).</li>
+                    <li><strong>Exame Inicial:</strong> Radiografia de tórax PA em ortostase + abdome (demonstra <strong>pneumoperitônio</strong> subdiafragmático em ~75-80% dos casos).</li>
+                    <li><strong>Conduta Cirúrgica:</strong> Laparoscopia ou laparotomia, lavagem exaustiva da cavidade, <strong>ulcerorrafia + epiploplastia (Parche de Graham)</strong> + biópsia se úlcera gástrica + erradicação do <em>H. pylori</em>.</li>
+                  </ul>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '4. Abdome Agudo Obstrutivo (Bridas) & Vascular (Isquemia Mesentérica)',
+            badge: 'Emergências Críticas',
+            color: 'amber',
+            content: `
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60">
+                  <h4 class="font-bold text-amber-800 dark:text-amber-300 mb-2">🚧 Abdome Agudo Obstrutivo</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Causas Delgado:</strong> 1º <strong>Bridas/Aderências</strong> (cirurgia abdominal prévia) &gt; 2º Hérnias &gt; 3º Neoplasias.</li>
+                    <li><strong>Causas Cólon:</strong> 1º <strong>Neoplasia colorretal</strong> &gt; 2º Volvo (sigmoide/ceco) &gt; 3º Diverticulite estenosante.</li>
+                    <li><strong>Radiografia:</strong> Delgado = alças centrais, <em>empilhamento de moedas</em> (pregas coniventes); Cólon = alças periféricas, <em>haustrações</em>.</li>
+                    <li><strong>Alça Fechada (Perigo!):</strong> Obstrução colônica com <strong>válvula ileocecal competente</strong> impede refluxo para o delgado &rarr; distensão progressiva do ceco (Lei de Laplace) &rarr; risco iminente de ruptura se <strong>ceco &ge; 12 cm</strong>!</li>
+                    <li><strong>Manejo Bridas Simples:</strong> Conservador por 24-48h (jejum, SNG aberta, hidratação + K+, teste com contraste hidrossolúvel/Gastrografina). <strong>Cirurgia imediata</strong> se sinais de estrangulamento (febre, taquicardia, leucocitose importante, acidose, dor contínua, peritonite).</li>
+                  </ul>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-rose-700 dark:text-rose-400 mb-2">🩸 Abdome Agudo Vascular (Isquemia Mesentérica Aguda)</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Etiologia Principal:</strong> <strong>Embolia da Artéria Mesentérica Superior (AMS)</strong> (~50%) em cardiopatas com <strong>Fibrilação Atrial (FA)</strong> ou IAM recente (poupa os primeiros ramos jejunais e cólica média). Outras: trombose arterial (aterosclerose/angina mesentérica prévia), isquemia não oclusiva (NOMI - choque/vasopressor), trombose venosa mesentérica.</li>
+                    <li><strong>Marca Clínica Clássica:</strong> <strong>Dissociação clínico-propedêutica</strong> ("dor abdominal intensa e súbita, completamente desproporcional ao exame físico inicialmente inocente/flácido").</li>
+                    <li><strong>Laboratório & Imagem:</strong> Leucocitose acentuada, <strong>acidose metabólica com lactato elevado</strong>. Padrão-ouro: <strong>AngioTC de abdome</strong>.</li>
+                    <li><strong>Conduta:</strong> Heparinização sistêmica + laparotomia exploradora urgente para <strong>embolectomia (cateter de Fogarty)</strong> + ressecção apenas das alças francamente necróticas + <strong>revisão programada em 24-48h (Second-Look)</strong>.</li>
+                  </ul>
+                </div>
+              </div>
+            `
+          }
+        ],
+        cases: [
+          {
+            id: 'u10_c1',
+            title: 'Caso 1 — Apendicite Aguda Tardia com Massa Palpável em FID',
+            tags: ['Apendicite Complicada', 'Abscesso Bloqueado', 'Conduta Não Operatória'],
+            vignette: 'Homem de 34 anos procura o pronto-socorro com história de dor em fossa ilíaca direita há 6 dias, associada a febre vespertina (38,4 °C) e hiporexia. Nega sinais de peritonite difusa. Exame físico: PA 120x80 mmHg, FC 92 bpm, abdome plano, indolor nos demais quadrantes, porém com massa palpável dolorosa e bem delimitada em FID, sem descompressão brusca difusa. Leucócitos: 16.400/mm³. TC de abdome revela apêndice perfurado bloqueado com coleção abscedada bem delimitada de 5,8 cm em FID, sem líquido livre na cavidade.',
+            diagnosis: 'Apendicite aguda complicada com abscesso periapendicular bloqueado (> 4 cm) sem peritonite generalizada. A cirurgia imediata nesse cenário apresenta alta morbidade, risco de lesão de alças aderidas e necessidade de ileocolectomia.',
+            conduct: 'Tratamento conservador inicial: internação, antibioticoterapia venosa de amplo espectro (cobertura para Gram-negativos e anaeróbios, ex: ceftriaxona + metronidazol) e drenagem percutânea do abscesso guiada por USG ou TC (indicada pois coleção > 4 cm). Após resolução clínica, realiza-se colonoscopia (se > 40 anos) e apendicectomia de intervalo após 6 a 8 semanas.'
+          },
+          {
+            id: 'u10_c2',
+            title: 'Caso 2 — Colecistite Aguda Litiásica Moderada (TG18 Grau II)',
+            tags: ['Colecistite TG18', 'Visão Crítica de Strasberg'],
+            vignette: 'Mulher de 52 anos, obesa, chega ao PS com dor contínua em hipocôndrio direito há 4 dias, náuseas, vômitos e febre de 38,5 °C. Exame físico: Sinal de Murphy positivo, massa palpável e dolorosa em HCD, sem icterícia. Exames: Leucócitos 19.800/mm³, PCR 140 mg/L, bilirrubinas totais 1,1 mg/dL, creatinina 0,9 mg/dL, plaquetas 240.000/mm³. USG: vesícula hiperdistendida, parede de 6 mm, cálculo de 1,8 cm impactado no infundíbulo e líquido pericolecístico.',
+            diagnosis: 'Colecistite aguda litiásica Grau II (Moderada) pelos Critérios de Tóquio (TG18) — preenche critérios diagnósticos A, B e C, e apresenta critérios de gravidade Grau II (leucocitose > 18.000/mm³, duração > 72 horas e massa palpável em HCD), sem disfunções orgânicas (Grau III).',
+            conduct: 'Antibioticoterapia venosa e colecistectomia videolaparoscópica precoce em centro experiente, obtendo-se obrigatoriamente a Visão Crítica de Segurança de Strasberg antes da clipagem/secção de qualquer estrutura (limpeza do tecido fibroadiposo do triângulo hepatocístico, descolamento do terço inferior da vesícula do leito hepático e visualização de apenas duas estruturas — ducto cístico e artéria cística — entrando na vesícula).'
+          },
+          {
+            id: 'u10_c3',
+            title: 'Caso 3 — Diverticulite Aguda Complicada com Peritonite Generalizada',
+            tags: ['Diverticulite', 'Hinchey III', 'Cirurgia de Hartmann'],
+            vignette: 'Homem de 67 anos, hipertenso, com história conhecida de doença diverticular dos cólons, dá entrada com dor intensa em fossa ilíaca esquerda há 36 horas que se espalhou por todo o abdome nas últimas 6 horas. Exame físico: PA 95x60 mmHg, FC 118 bpm, Tax 38,8 °C, abdome distendido, rígido e doloroso difusamente à descompressão brusca. TC de abdome evidencia espessamento de sigmoide com múltiplos divertículos, pneumoperitônio moderado e líquido livre difuso na cavidade peritoneal.',
+            diagnosis: 'Diverticulite aguda complicada estágio Hinchey III (peritonite purulenta generalizada) ou IV (peritonite fecal). A presença de peritonite difusa e instabilidade hemodinâmica incipiente contraindica tratamento conservador ou drenagem percutânea isolada.',
+            conduct: 'Ressuscitação volêmica, antibioticoterapia de amplo espectro e laparotomia exploradora de urgência. A conduta clássica e mais segura em pacientes instáveis ou com contaminação severa é a Cirurgia de Hartmann (sigmoidectomia sem anastomose primária, com confecção de colostomia terminal e sepultamento do coto retal). Em pacientes selecionados hemodinamicamente estáveis (Hinchey III), a ressecção com anastomose primária e ileostomia derivativa protetora é uma alternativa.'
+          },
+          {
+            id: 'u10_c4',
+            title: 'Caso 4 — Dor Epigástrica Súbita em Punhalada e Abdome em Tábua',
+            tags: ['Úlcera Perfurada', 'Sinal de Jobert', 'Parche de Graham'],
+            vignette: 'Homem de 44 anos, tabagista, usuário crônico de diclofenaco por lombalgia, relata início súbito há 3 horas de dor epigástrica lancinante ("em punhalada") enquanto assistia televisão. Exame físico: paciente imóvel na maca, fácies de dor, PA 105x65 mmHg, FC 112 bpm, abdome em tábua com defesa involuntária generalizada e desaparecimento da macicez hepática à percussão (timpanismo sobre o hipocôndrio direito).',
+            diagnosis: 'Abdome agudo perfurativo secundário à úlcera péptica perfurada (provavelmente duodenal anterior ou pré-pilórica, associada ao uso de AINEs e tabagismo). O desaparecimento da macicez hepática configura o Sinal de Jobert.',
+            conduct: 'Jejum, SNG, hidratação vigorosa, inibidor de bomba de prótons (IBP) EV, antibioticoterapia e radiografia de tórax PA em ortostase (que confirmará pneumoperitônio subdiafragmático). Segue-se abordagem cirúrgica (videolaparoscopia ou laparotomia) com limpeza da cavidade peritoneal, ulcerorrafia simples reforçada com omentoplastia pediculada (Parche de Graham), biópsia das bordas (se localização gástrica) e posterior erradicação do H. pylori.'
+          },
+          {
+            id: 'u10_c5',
+            title: 'Caso 5 — Dor Abdominal Excruciante em Cardiopata com Fibrilação Atrial',
+            tags: ['Isquemia Mesentérica', 'Embolia AMS', 'AngioTC'],
+            vignette: 'Mulher de 78 anos, portadora de fibrilação atrial crônica sem anticoagulação regular, chega ao PS gritando de dor abdominal difusa de início súbito há 2 horas, acompanhada de um episódio de vômito e evacuação diarreica. Exame físico: PA 135x85 mmHg, FC 128 bpm (ritmo irregular), abdome flácido, depressível, sem sinais de irritação peritoneal! Gasometria arterial: pH 7,26, HCO3 15 mEq/L, lactato 5,4 mmol/L; Leucócitos 22.500/mm³.',
+            diagnosis: 'Isquemia Mesentérica Aguda de etiologia embólica (Embolia da Artéria Mesentérica Superior - AMS). O quadro ilustra a clássica "dissociação clínico-propedêutica" (dor abdominal excruciante completamente desproporcional ao exame físico inicialmente inocente), associada a cardiopatia emboligênica (FA), leucocitose importante e acidose metabólica lática.',
+            conduct: 'Anticoagulação imediata com heparina não fracionada EV e realização urgente de AngioTC de abdome (padrão-ouro, demonstra falha de enchimento na AMS logo após a origem da artéria cólica média). Tratamento cirúrgico emergencial: laparotomia exploradora para embolectomia da AMS com cateter de Fogarty, avaliação da perfusão intestinal, ressecção exclusiva dos segmentos com necrose irreversível e programação de revisão cirúrgica em 24-48 horas (Second-Look).'
+          }
+        ],
+        questions: [
+          {
+            id: 'u10_q1',
+            question: 'Na cronologia clássica da apendicite aguda (Cronologia de Murphy), a dor inicial é referida na região epigástrica ou periumbilical e, após algumas horas, localiza-se na fossa ilíaca direita. Essa mudança na característica da dor ocorre porque:',
+            options: [
+              'A dor inicial é parietal (fibras A-delta) e evolui para dor visceral (fibras C).',
+              'A dor inicial é visceral (distensão do apêndice conduzida por fibras C) e evolui para dor somática/parietal (irritação do peritônio parietal conduzida por fibras A-delta).',
+              'Ocorre perfuração imediata do apêndice com irritação do nervo frênico.',
+              'Há compressão direta do músculo obturador interno desde o início do quadro.',
+              'Ocorre isquemia arterial primária da artéria ileocólica.'
+            ],
+            correctIndex: 1,
+            explanation: 'A distensão inicial do apêndice (derivado do intestino médio) estimula receptores viscerais conduzidos por fibras C até T10 (dor periumbilical vaga). Quando o processo inflamatório transpassa a serosa e irrita o peritônio parietal da FID, ativam-se fibras somáticas A-delta, tornando a dor bem localizada.'
+          },
+          {
+            id: 'u10_q2',
+            question: 'Um paciente com suspeita de apendicite aguda apresenta dor na fossa ilíaca direita ao se realizar a extensão passiva da coxa direita com o paciente em decúbito lateral esquerdo. Esse sinal semiológico e a provável posição anatômica do apêndice são, respectivamente:',
+            options: [
+              'Sinal de Rovsing — apêndice pélvico.',
+              'Sinal do Obturador — apêndice subhepático.',
+              'Sinal do Psoas — apêndice retrocecal.',
+              'Sinal de Dunphy — apêndice pré-ileal.',
+              'Sinal de Lenander — apêndice intraherniário.'
+            ],
+            correctIndex: 2,
+            explanation: 'O Sinal do Psoas (dor à extensão da coxa direita) indica contato inflamatório de um apêndice retrocecal sobre o músculo iliopsoas. O Sinal do Obturador (rotação interna da coxa fletida) sugere apêndice pélvico.'
+          },
+          {
+            id: 'u10_q3',
+            question: 'Segundo os Critérios de Tóquio (TG18), um paciente com colecistite aguda litiásica que apresenta leucocitose de 21.000/mm³, duração dos sintomas há 96 horas e massa palpável em hipocôndrio direito, porém sem disfunção renal, neurológica, cardiovascular ou respiratória, é classificado como:',
+            options: [
+              'Grau I (Leve).',
+              'Grau II (Moderada).',
+              'Grau III (Grave).',
+              'Síndrome de Mirizzi Tipo IV.',
+              'Colangite supurativa aguda.'
+            ],
+            correctIndex: 1,
+            explanation: 'No TG18, a colecistite Grau II (Moderada) é definida pela presença de qualquer um dos seguintes: leucócitos > 18.000/mm³, massa dolorosa palpável em HCD, duração > 72 horas ou inflamação local acentuada (gangrenosa, enfisematosa, abscesso pericolecístico). Grau III exige disfunção orgânica.'
+          },
+          {
+            id: 'u10_q4',
+            question: 'Qual dos seguintes elementos NÃO faz parte da "Visão Crítica de Segurança de Strasberg" durante uma colecistectomia videolaparoscópica?',
+            options: [
+              'Limpeza completa do tecido adiposo e fibroso do triângulo hepatocístico.',
+              'Descolamento do terço inferior da vesícula biliar do leito hepático (placa cística).',
+              'Visualização inequívoca de apenas duas estruturas (ducto cístico e artéria cística) entrando na vesícula biliar.',
+              'Dissecção circunferencial obrigatória do ducto hepático comum e do colédoco supraduodenal.',
+              'Garantir que nenhuma outra estrutura tubular esteja conectada à vesícula antes da clipagem.'
+            ],
+            correctIndex: 3,
+            explanation: 'A Visão Crítica de Strasberg exige 3 critérios: (1) triângulo hepatocístico livre de gordura/tecido fibroso; (2) terço inferior da vesícula separado do fígado; (3) apenas duas estruturas entrando na vesícula. Dissecar circunferencialmente o colédoco aumenta o risco de isquemia e lesão da via biliar principal!'
+          },
+          {
+            id: 'u10_q5',
+            question: 'Paciente de 64 anos realiza tomografia computadorizada de abdome que demonstra diverticulite aguda de sigmoide complicada por abscesso pélvico bloqueado de 6 cm à distância, sem líquido livre difuso. Segundo a Classificação de Hinchey modificada, qual é o estágio e a melhor conduta inicial?',
+            options: [
+              'Hinchey Ia — Cirurgia de Hartmann imediata.',
+              'Hinchey Ib — Colonoscopia diagnóstica de urgência.',
+              'Hinchey II — Antibioticoterapia venosa e drenagem percutânea do abscesso guiada por imagem.',
+              'Hinchey III — Tratamento ambulatorial com ciprofloxacino e metronidazol via oral.',
+              'Hinchey IV — Lavagem peritoneal laparoscópica isolada.'
+            ],
+            correctIndex: 2,
+            explanation: 'Abscessos pélvicos ou retroperitoneais à distância configuram o estágio Hinchey II. Coleções maiores que 4-5 cm devem ser tratadas com antibioticoterapia e drenagem percutânea guiada por TC/USG, evitando cirurgia de emergência com colostomia.'
+          },
+          {
+            id: 'u10_q6',
+            question: 'O desaparecimento da macicez hepática à percussão do hipocôndrio direito, substituída por timpanismo em um paciente com abdome em tábua, recebe o nome de:',
+            options: [
+              'Sinal de Cullen.',
+              'Sinal de Grey-Turner.',
+              'Sinal de Jobert.',
+              'Sinal de Courvoisier-Terrier.',
+              'Sinal de Kehr.'
+            ],
+            correctIndex: 2,
+            explanation: 'O Sinal de Jobert corresponde ao timpanismo à percussão da loja hepática devido à interposição de ar livre (pneumoperitônio) entre o fígado e a parede abdominal anterior, sendo clássico na perfuração de víscera oca (como úlcera péptica perfurada).'
+          },
+          {
+            id: 'u10_q7',
+            question: 'Em um paciente com abdome agudo obstrutivo secundário a neoplasia estenosante de cólon descendente e válvula ileocecal competente, qual segmento intestinal apresenta o maior risco de ruptura isquêmica (diastática) devido à Lei de Laplace?',
+            options: [
+              'Íleo terminal.',
+              'Cólon transverso.',
+              'Ceco.',
+              'Sigmoide.',
+              'Reto intraperitoneal.'
+            ],
+            correctIndex: 2,
+            explanation: 'A válvula ileocecal competente cria uma obstrução em alça fechada no cólon. Pela Lei de Laplace (Tensão = Pressão x Raio), o ceco — por ter o maior diâmetro do cólon — sofre a maior tensão parietal e rompe primeiro (risco crítico quando diâmetro cecal ≥ 12 cm).'
+          },
+          {
+            id: 'u10_q8',
+            question: 'Paciente com laparotomia prévia há 5 anos interna por obstrução intestinal simples de delgado por bridas (sem sinais de estrangulamento). Após 24h de jejum, sonda nasogástrica e hidratação, qual exame/conduta possui tanto valor prognóstico quanto efeito terapêutico osmótico para resolução do quadro?',
+            options: [
+              'Colonoscopia descompressiva.',
+              'Administração de contraste hidrossolúvel hipertônico (Gastrografina) via SNG seguida de radiografia.',
+              'Enema opaco com sulfato de bário.',
+              'Endoscopia digestiva alta com dilatação pilórica.',
+              'Administração de loperamida para reduzir o peristaltismo.'
+            ],
+            correctIndex: 1,
+            explanation: 'O teste com Gastrografina (contraste iodado hidrossolúvel hiperosmolar) atrai líquido para a luz intestinal, reduz o edema parietal e estimula o peristaltismo. Se o contraste atingir o cólon em 24h, a chance de resolução sem cirurgia ultrapassa 95%.'
+          },
+          {
+            id: 'u10_q9',
+            question: 'Qual é o achado clínico mais característico da fase inicial da isquemia mesentérica aguda por embolia da artéria mesentérica superior?',
+            options: [
+              'Abdome em tábua desde os primeiros minutos com pneumoperitônio maciço.',
+              'Dor abdominal intensa e súbita, desproporcional aos achados inicialmente discretos do exame físico abdominal.',
+              'Icterícia flutuante associada a febre com calafrios e hipotensão.',
+              'Hematêmese volumosa seguida de melena e ascite tensa.',
+              'Massa pulsátil indolor em mesogástrio com sopro sistólico.'
+            ],
+            correctIndex: 1,
+            explanation: 'A isquemia mesentérica aguda inicia-se pela necrose da mucosa (altamente sensível à hipóxia), gerando dor visceral intensa enquanto a serosa e o peritônio parietal ainda não estão inflamados — gerando a clássica dissociação entre dor excruciante e exame abdominal inocente.'
+          },
+          {
+            id: 'u10_q10',
+            question: 'A Pêntade de Reynolds caracteriza a colangite aguda tóxica (supurativa grave) e exige descompressão biliar de emergência. Ela é composta pela Tríade de Charcot (febre com calafrios, icterícia e dor em hipocôndrio direito) acrescida de:',
+            options: [
+              'Vômitos fecaloides e parada de eliminação de flatos.',
+              'Hipotensão arterial (choque) e alteração do nível de consciência.',
+              'Equimose periumbilical e equimose em flancos.',
+              'Hematêmese e esplenomegalia.',
+              'Anúria e hipertensão portal.'
+            ],
+            correctIndex: 1,
+            explanation: 'Tríade de Charcot = febre + icterícia + dor em HCD. Quando se somam hipotensão/choque séptico e depressão do sensório/confusão mental, configura-se a Pêntade de Reynolds, indicando colangite grave com indicação de drenagem biliar urgente (preferencialmente por CPRE).'
+          }
+        ]
+      },
+
+      // --------------------------------------------------------------------------
+      // UNIDADE 11: AFECÇÕES CIRÚRGICAS DO ESÔFAGO (09/11)
+      // --------------------------------------------------------------------------
+      {
+        id: 'u11',
+        shortTitle: 'Unidade 11',
+        title: 'Unidade 11: Afecções Cirúrgicas do Esôfago',
+        date: '09/11',
+        subtitle: 'Anatomia esofágica, DRGE e hérnias hiatais, acalásia, divertículo de Zenker, síndrome de Boerhaave e neoplasias malignas.',
+        topics: ['Anatomia & Ausência de Serosa', 'DRGE & Hérnias de Hiato', 'Acalásia (Chicago & Rezende)', 'Zenker & Boerhaave', 'CEC vs Adenocarcinoma & Siewert'],
+        summarySections: [
+          {
+            title: '1. Anatomia & Fisiologia Cirúrgica do Esôfago',
+            badge: 'Fundamentos',
+            color: 'sky',
+            content: `
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-sky-700 dark:text-sky-400 mb-2">🧬 Peculiaridades Anatômicas Cruciais</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Ausência de Serosa:</strong> Revestido apenas por camada <em>adventícia</em>. Consequências: maior risco de deiscência de anastomoses cirúrgicas e invasão precoce de estruturas mediastinais adjacentes nas neoplasias.</li>
+                    <li><strong>Musculatura:</strong> 1/3 superior estriada; 1/3 médio mista; 1/3 inferior lisa.</li>
+                    <li><strong>Inervação:</strong> Nervos vagos (formam plexo esofágico &rarr; troncos vagais anterior/esquerdo e posterior/direito).</li>
+                    <li><strong>Irrigação Segmentar:</strong> Cervical (tireóidea inferior), Torácico (ramos brônquicos e esofágicos diretos da aorta), Abdominal (gástrica esquerda e frênica inferior esquerda).</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-teal-700 dark:text-teal-400 mb-2">📏 3 Estreitamentos Anatômicos (Distância da Arcada Dentária)</h4>
+                  <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                    <li><strong>1º Estreitamento (15 cm):</strong> Esfíncter Esofágico Superior (EES / músculo cricofaríngeo) — local mais estreito do esôfago.</li>
+                    <li><strong>2º Estreitamento (25 cm):</strong> Cruzamento do arco aórtico e brônquio fonte esquerdo.</li>
+                    <li><strong>3º Estreitamento (40 cm):</strong> Hiato diafragmático / Esfíncter Esofágico Inferior (EEI).</li>
+                  </ul>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '2. Afecções Benignas: DRGE, Hérnias de Hiato, Acalásia, Zenker & Boerhaave',
+            badge: 'Cirurgia Benigna',
+            color: 'teal',
+            content: `
+              <div class="space-y-4 text-sm">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div class="p-4 rounded-xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800/60">
+                    <h4 class="font-bold text-teal-800 dark:text-teal-300 mb-2">🔥 DRGE & Hérnias de Hiato</h4>
+                    <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                      <li><strong>Hérnia Tipo I (Deslizamento - 95%):</strong> Migração da JEG acima do diafragma.</li>
+                      <li><strong>Hérnia Tipo II (Paraesofágica verdadeira):</strong> JEG permanece intra-abdominal; fundo gástrico hernia ao lado do esôfago (risco de volvo gástrico/estrangulamento &rarr; indicação cirúrgica!).</li>
+                      <li><strong>Hérnia Tipo III (Mista):</strong> Deslizamento da JEG + herniação paraesofágica do fundo.</li>
+                      <li><strong>Hérnia Tipo IV:</strong> Herniação de outros órgãos (cólon, baço, delgado).</li>
+                      <li><strong>Exames pré-op DRGE:</strong> EDA + Manometria esofágica (obrigatória para guiar o tipo de válvula) + pHmetria 24h (padrão-ouro diagnóstico).</li>
+                      <li><strong>Fundoplicaturas:</strong> <strong>Nissen (360° total)</strong> se motilidade esofágica normal; <strong>Toupet (270° posterior)</strong> ou <strong>Dor (180° anterior)</strong> se dismotilidade grave.</li>
+                    </ul>
+                  </div>
+
+                  <div class="p-4 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60">
+                    <h4 class="font-bold text-indigo-800 dark:text-indigo-300 mb-2">🦢 Acalásia (Idiopática ou Chagásica)</h4>
+                    <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                      <li><strong>Fisiopatologia:</strong> Destruição dos neurônios inibitórios (óxido nítrico/VIP) do <strong>plexo mioentérico de Auerbach</strong> &rarr; aperistalse do corpo + falha no relaxamento do EEI.</li>
+                      <li><strong>Clínica:</strong> Disfagia progressiva para <strong>sólidos e líquidos desde o início</strong>, regurgitação, perda ponderal.</li>
+                      <li><strong>Diagnóstico:</strong> <em>Esofagograma</em> ("bico de pássaro" / "chama de vela"); <em>EDA</em> (obrigatória para descartar <strong>pseudoacalásia</strong> por tumor da JEG); <em>Manometria</em> (padrão-ouro — Chicago Tipo II tem melhor resposta).</li>
+                      <li><strong>Classificação de Rezende:</strong> Grau I (&lt; 4 cm), Grau II (4-7 cm), Grau III (7-10 cm), <strong>Grau IV (&gt; 10 cm / dolicomegaesôfago)</strong>.</li>
+                      <li><strong>Conduta:</strong> Graus I-III &rarr; <strong>Cardiomiotomia a Heller + fundoplicatura parcial (Dor/Toupet)</strong> ou POEM; <strong>Grau IV</strong> &rarr; <strong>Esofagectomia</strong>.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="p-4 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60">
+                    <h4 class="font-bold text-amber-800 dark:text-amber-300 mb-1.5">🎒 Divertículo de Zenker</h4>
+                    <p class="text-slate-700 dark:text-slate-300">Falso divertículo (mucosa + submucosa) <strong>de pulsão</strong> por incoordenação motora do cricofaríngeo. Emerge na parede posterior da hipofaringe através do <strong>Trígono de Killian</strong> (entre músculo constritor inferior da faringe e músculo cricofaríngeo). Causa disfagia alta, halitose e regurgitação de alimentos não digeridos. <strong>Tratamento:</strong> Miotomia do cricofaríngeo + diverticulectomia ou diverticulopexia (ou septotomia endoscópica).</p>
+                  </div>
+                  <div class="p-4 rounded-xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
+                    <h4 class="font-bold text-rose-800 dark:text-rose-300 mb-1.5">💥 Síndrome de Boerhaave</h4>
+                    <p class="text-slate-700 dark:text-slate-300">Ruptura espontânea <strong>transmural</strong> do esôfago distal (parede posterolateral esquerda) após vômitos incoercíveis. <strong>Tríade de Mackler:</strong> vômitos + dor torácica intensa + enfisema subcutâneo cervical. Exame: esofagograma com contraste hidrossolúvel (Gastrografina) ou TC tórax. <strong>Conduta:</strong> Toracotomia esquerda urgente (&lt; 24h) com desbridamento mediastinal, rafia primária e drenagem ampla.</p>
+                  </div>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '3. Afecções Malignas do Esôfago: CEC vs Adenocarcinoma & Siewert',
+            badge: 'Oncologia Esofágica',
+            color: 'rose',
+            content: `
+              <div class="overflow-x-auto mb-4">
+                <table class="w-full text-sm text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-700">
+                      <th class="p-3 font-bold">Característica</th>
+                      <th class="p-3 font-bold text-amber-700 dark:text-amber-400">Carcinoma Espinocelular (CEC)</th>
+                      <th class="p-3 font-bold text-sky-700 dark:text-sky-400">Adenocarcinoma</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                    <tr>
+                      <td class="p-3 font-semibold">Localização Típica</td>
+                      <td class="p-3">Terço <strong>médio</strong> (mais comum) e superior</td>
+                      <td class="p-3">Terço <strong>distal</strong> e Junção Esofagogástrica (JEG)</td>
+                    </tr>
+                    <tr>
+                      <td class="p-3 font-semibold">Fatores de Risco</td>
+                      <td class="p-3"><strong>Tabagismo + Etilismo</strong> (sinergismo), acalásia, estenose cáustica, tilose palmar/plantar, ingestão de bebidas muito quentes, HPV.</td>
+                      <td class="p-3"><strong>DRGE crônica &rarr; Esôfago de Barrett</strong> (metaplasia intestinal), obesidade, tabagismo.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-slate-900 dark:text-white mb-2">📍 Classificação de Siewert (Tumores da JEG)</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Siewert Tipo I:</strong> Epicentro de 1 a 5 cm <em>acima</em> da linha Z (adenocarcinoma do esôfago distal / Barrett) &rarr; tratado como <strong>câncer de esôfago</strong>.</li>
+                    <li><strong>Siewert Tipo II:</strong> Epicentro de 1 cm acima até 2 cm abaixo da linha Z (cárdia verdadeira).</li>
+                    <li><strong>Siewert Tipo III:</strong> Epicentro de 2 a 5 cm <em>abaixo</em> da linha Z (subcárdico) &rarr; tratado como <strong>câncer gástrico</strong> (gastrectomia total).</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60">
+                  <h4 class="font-bold text-sky-800 dark:text-sky-300 mb-2">🎯 Estadiamento & Terapêutica</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Estadiamento:</strong> EDA + biópsia &rarr; TC tórax/abdome &rarr; <strong>PET-CT</strong> (afastar metástases ocultas) &rarr; <strong>Ecoendoscopia (EUS)</strong> (melhor exame para avaliar profundidade T e linfonodos N).</li>
+                    <li><strong>T1a (restrito à mucosa):</strong> Ressecção endoscópica (mucosectomia / ESD).</li>
+                    <li><strong>T1b - T4a ou N+:</strong> Quimiorradioterapia neoadjuvante (<strong>Protocolo CROSS</strong>) + <strong>Esofagectomia</strong> (<em>Ivor-Lewis</em>: laparotomia + toracotomia direita; <em>McKeown</em>: 3 campos com anastomose cervical; <em>Transhiatal</em>: sem toracotomia).</li>
+                  </ul>
+                </div>
+              </div>
+            `
+          }
+        ],
+        cases: [
+          {
+            id: 'u11_c1',
+            title: 'Caso 1 — Disfagia de Longa Data e Megaesôfago Avançado',
+            tags: ['Acalásia', 'Rezende Grau IV', 'Esofagectomia'],
+            vignette: 'Homem de 58 anos, natural do interior de Minas Gerais, refere disfagia progressiva para sólidos e líquidos há 12 anos, acompanhada de regurgitação de alimentos não digeridos ao deitar, tosse noturna e perda de 14 kg nos últimos 8 meses. Esofagograma baritado evidencia esôfago intensamente dilatado, tortuoso, apoiado sobre a cúpula diafragmática ("esôfago em sigmoide") com diâmetro transverso máximo de 11,5 cm e afilamento distal em "bico de pássaro". EDA descartou neoplasia.',
+            diagnosis: 'Acalásia avançada (provavelmente chagásica) — Dolicomegaesôfago Grau IV de Rezende/Mascarenhas (diâmetro > 10 cm e perda do eixo longitudinal do órgão).',
+            conduct: 'Na acalásia Graus I a III, o tratamento de escolha é a cardiomiotomia a Heller associada a fundoplicatura parcial (Dor ou Toupet). Contudo, no dolicomegaesôfago Grau IV (órgão atônico e redundante), a miotomia isolada apresenta altíssima taxa de falha por estase gravitacional; portanto, a conduta cirúrgica definitiva indicada é a esofagectomia subtotal (transhiatal ou vídeo-assistida) com reconstrução por tubo gástrico (gastroplastia).'
+          },
+          {
+            id: 'u11_c2',
+            title: 'Caso 2 — DRGE Refratária Associada à Dismotilidade Esofágica',
+            tags: ['DRGE', 'Manometria', 'Fundoplicatura Parcial'],
+            vignette: 'Mulher de 41 anos apresenta pirose e regurgitação ácida diárias há 5 anos, com resposta apenas parcial ao uso de omeprazol em dose dobrada. EDA mostra esofagite erosiva grau C de Los Angeles e hérnia hiatal por deslizamento de 3 cm. pHmetria de 24h confirma refluxo ácido patológico (escore de DeMeester = 48). Manometria esofágica pré-operatória demonstra peristalse ineficaz em 80% das deglutições, com baixa amplitude contrátil no corpo esofágico distal.',
+            diagnosis: 'Doença do Refluxo Gastroesofágico (DRGE) com indicação cirúrgica (refratariedade clínica/esofagite grave), associada a hipomotilidade esofágica acentuada detectada na manometria pré-operatória.',
+            conduct: 'Correção da hérnia hiatal (hiatoplastia) associada a fundoplicatura parcial — Técnica de Toupet (270° posterior) ou Dor (180° anterior). A manometria pré-operatória é fundamental porque a realização de uma válvula total de 360° (Nissen) em pacientes com hipomotilidade grave acarreta altíssimo risco de disfagia pós-operatória persistente.'
+          },
+          {
+            id: 'u11_c3',
+            title: 'Caso 3 — Idoso com Halitose, Regurgitação Alimentar e Abaulada Cervical',
+            tags: ['Divertículo de Zenker', 'Trígono de Killian'],
+            vignette: 'Homem de 75 anos queixa-se de engasgos frequentes, sensação de alimento parado na garganta, halitose intensa e regurgitação de restos alimentares não digeridos horas após as refeições, além de ruídos hidroaéreos no pescoço à deglutição. Esofagograma baritado revela saculação posterior na transição faringoesofágica à esquerda, comprimindo o esôfago cervical.',
+            diagnosis: 'Divertículo de Zenker (divertículo faringoesofágico). Trata-se de um falso divertículo de pulsão que emerge na parede posterior da hipofaringe através do Trígono de Killian (entre as fibras oblíquas do músculo constritor inferior da faringe e as fibras transversas do músculo cricofaríngeo).',
+            conduct: 'Tratamento cirúrgico (cervicotomia esquerda) combinando obrigatoriamente a miotomia do músculo cricofaríngeo (para tratar a hipertonia/incoordenação de base e evitar recidiva) com a diverticulectomia (se > 2-3 cm) ou diverticulopexia. Em pacientes idosos de alto risco, a septotomia endoscópica (diverticulotomia endoscópica) é excelente alternativa minimamente invasiva.'
+          },
+          {
+            id: 'u11_c4',
+            title: 'Caso 4 — Adenocarcinoma da Junção Esofagogástrica em Paciente com Barrett',
+            tags: ['Adenocarcinoma', 'Siewert I', 'Protocolo CROSS'],
+            vignette: 'Homem de 63 anos, obeso, portador de DRGE de longa data, procura atendimento por disfagia progressiva para sólidos há 3 meses e emagrecimento de 7 kg. EDA mostra epitélio colunar avermelhado (Esôfago de Barrett) e lesão úlcero-infiltrativa localizada 3 cm acima da linha Z. Biópsia: adenocarcinoma moderadamente diferenciado. Ecoendoscopia: invasão até muscular própria sem invasão de órgãos adjacentes, 2 linfonodos periesofágicos suspeitos (uT2N1). PET-CT sem metástases à distância.',
+            diagnosis: 'Adenocarcinoma do esôfago distal / Junção Esofagogástrica Siewert Tipo I (epicentro entre 1 e 5 cm acima da transição esofagogástrica), localmente avançado ressecável (T2N1M0).',
+            conduct: 'Por se tratar de Siewert Tipo I, é estadiado e tratado como neoplasia primária do esôfago. Como é tumor localmente avançado (≥ T1b ou N+), indica-se terapia neoadjuvante com quimiorradioterapia (Protocolo CROSS: carboplatina + paclitaxel + radioterapia) seguida de esofagectomia subtotal (Ivor-Lewis ou McKeown) com linfadenectomia mediastinal e abdominal.'
+          },
+          {
+            id: 'u11_c5',
+            title: 'Caso 5 — Dor Torácica Súbita e Enfisema Subcutâneo Após Vômitos',
+            tags: ['Síndrome de Boerhaave', 'Tríade de Mackler', 'Emergência'],
+            vignette: 'Homem de 47 anos, após libação alcoólica e vários episódios de vômitos forçados, apresenta dor retroesternal lancinante irradiada para o dorso e dispneia súbita. Exame físico: taquipneico (FR 30 irpm), FC 124 bpm, PA 90x60 mmHg, crepitação à palpação da região supraclavicular e cervical (enfisema subcutâneo) e murmúrio vesicular abolido na base do hemitórax esquerdo. Radiografia de tórax: pneumomediastino e hidropneumotórax à esquerda.',
+            diagnosis: 'Síndrome de Boerhaave (ruptura espontânea transmural do esôfago distal, tipicamente na parede posterolateral esquerda logo acima do diafragma, decorrente do aumento súbito da pressão intraesofágica contra um EES fechado). Apresenta a clássica Tríade de Mackler (vômitos, dor torácica baixa e enfisema subcutâneo).',
+            conduct: 'Emergência cirúrgica com altíssima mortalidade se atrasada (> 24h). Conduta imediata: jejum, hidratação venosa vigorosa, antibioticoterapia de amplo espectro + antifúngico, drenagem pleural à esquerda, confirmação anatômica rápida (TC de tórax ou esofagograma com contraste hidrossolúvel — Gastrografina; nunca usar bário pelo risco de mediastinite química) e toracotomia esquerda urgente para desbridamento mediastinal e rafia primária em dois planos da laceração esofágica.'
+          }
+        ],
+        questions: [
+          {
+            id: 'u11_q1',
+            question: 'Uma característica anatômica fundamental do esôfago que explica tanto a maior taxa de deiscência de suas anastomoses quanto a disseminação loco-regional precoce das neoplasias esofágicas é:',
+            options: [
+              'A presença de dupla camada serosa peritoneal em toda a sua extensão.',
+              'A ausência de camada serosa, sendo revestido externamente apenas por adventícia.',
+              'A irrigação exclusiva por um único tronco arterial terminal.',
+              'A ausência de camada submucosa no terço médio.',
+              'A presença de musculatura estriada esquelética no esfíncter esofágico inferior.'
+            ],
+            correctIndex: 1,
+            explanation: 'Diferente do restante do trato gastrointestinal abdominal, o esôfago não possui camada serosa (apenas adventícia), o que reduz a resistência mecânica das suturas cirúrgicas e facilita a invasão direta de estruturas mediastinais adjacentes pelos tumores.'
+          },
+          {
+            id: 'u11_q2',
+            question: 'Na endoscopia digestiva alta, os três estreitamentos anatômicos fisiológicos do esôfago são encontrados, respectivamente, a que distâncias aproximadas da arcada dentária superior?',
+            options: [
+              '10 cm, 20 cm e 30 cm.',
+              '15 cm, 25 cm e 40 cm.',
+              '20 cm, 35 cm e 50 cm.',
+              '12 cm, 30 cm e 45 cm.',
+              '18 cm, 28 cm e 38 cm.'
+            ],
+            correctIndex: 1,
+            explanation: 'Os três estreitamentos anatômicos do esôfago situam-se a: 15 cm (esfíncter esofágico superior/cricofaríngeo), 25 cm (cruzamento do arco aórtico e brônquio principal esquerdo) e 40 cm (hiato esofágico do diafragma/EEI).'
+          },
+          {
+            id: 'u11_q3',
+            question: 'Em relação às hérnias de hiato diafragmático, a hérnia paraesofágica verdadeira (Tipo II) caracteriza-se por:',
+            options: [
+              'Migração da junção esofagogástrica acima do diafragma, mantendo o fundo gástrico abaixo dela.',
+              'Permanência da junção esofagogástrica em sua posição anatômica intra-abdominal, com herniação do fundo gástrico adjacente ao esôfago.',
+              'Herniação exclusiva do cólon transverso e do baço através do hiato esofágico.',
+              'Representar 95% de todas as hérnias hiatais diagnosticadas na prática clínica.',
+              'Nunca apresentar risco de volvo gástrico ou estrangulamento.'
+            ],
+            correctIndex: 1,
+            explanation: 'Na hérnia hiatal Tipo II (paraesofágica pura), a junção esofagogástrica permanece ancorada no abdome, enquanto o fundo gástrico rola através do hiato ao lado do esôfago, acarretando risco de volvo gástrico, isquemia e perfuração.'
+          },
+          {
+            id: 'u11_q4',
+            question: 'Qual exame complementar é obrigatório no pré-operatório da cirurgia antirrefluxo (fundoplicatura) para avaliar a peristalse do corpo esofágico e definir entre válvula total (Nissen) ou parcial (Toupet/Dor)?',
+            options: [
+              'Cintilografia de esvaziamento gástrico.',
+              'Tomografia computadorizada de tórax com contraste.',
+              'Manometria esofágica.',
+              'Ecoendoscopia alta.',
+              'Videodeglutograma com bário.'
+            ],
+            correctIndex: 2,
+            explanation: 'A manometria esofágica avalia a função motora do corpo esofágico e o relaxamento do EEI. Se houver hipomotilidade grave, opta-se por fundoplicatura parcial (Toupet 270° ou Dor 180°) para evitar disfagia pós-operatória.'
+          },
+          {
+            id: 'u11_q5',
+            question: 'Na fisiopatologia da acalásia esofágica (idiopática ou chagásica), a aperistalse do corpo esofágico e a falha de relaxamento do esfíncter esofágico inferior decorrem da degeneração neuronal de qual estrutura?',
+            options: [
+              'Plexo submucoso de Meissner.',
+              'Células intersticiais de Cajal.',
+              'Neurônios inibitórios do plexo mioentérico de Auerbach.',
+              'Núcleo dorsal do nervo glossofaríngeo.',
+              'Gânglio celíaco.'
+            ],
+            correctIndex: 2,
+            explanation: 'A acalásia resulta da destruição seletiva dos neurônios inibitórios (produtores de óxido nítrico e VIP) do plexo mioentérico de Auerbach, causando perda da peristalse coordenada e hipertonia/não relaxamento do EEI.'
+          },
+          {
+            id: 'u11_q6',
+            question: 'Paciente com diagnóstico de acalásia apresenta, no esofagograma contrastado, dilatação esofágica acentuada de 11 cm de diâmetro, com perda do eixo vertical e aspecto tortuoso ("dolicomegaesôfago" — Grau IV de Rezende). Qual é a conduta cirúrgica mais adequada?',
+            options: [
+              'Cardiomiotomia a Heller isolada sem fundoplicatura.',
+              'Dilatação endoscópica com balão pneumático de 30 mm.',
+              'Esofagectomia subtotal com reconstrução do trânsito (gastroplastia).',
+              'Fundoplicatura total a Nissen de 360°.',
+              'Injeção de toxina botulínica no EEI.'
+            ],
+            correctIndex: 2,
+            explanation: 'No megaesôfago avançado Grau IV de Rezende (> 10 cm / dolicomegaesôfago), o esôfago perdeu completamente sua capacidade de esvaziamento mesmo após secção do EEI, indicando-se a esofagectomia.'
+          },
+          {
+            id: 'u11_q7',
+            question: 'O Divertículo de Zenker é um divertículo de pulsão da transição faringoesofágica que hernia através de uma área de fraqueza muscular posterior denominada:',
+            options: [
+              'Trígono de Hasselbach.',
+              'Trígono de Killian.',
+              'Triângulo de Calot.',
+              'Trígono de Passaro.',
+              'Orifício de Fruchaud.'
+            ],
+            correctIndex: 1,
+            explanation: 'O Divertículo de Zenker emerge através do Trígono de Killian, situado na parede posterior da hipofaringe entre as fibras oblíquas do músculo constritor inferior da faringe e as fibras horizontais do músculo cricofaríngeo.'
+          },
+          {
+            id: 'u11_q8',
+            question: 'A Tríade de Mackler é característica da Síndrome de Boerhaave (ruptura espontânea transmural do esôfago) e consiste em:',
+            options: [
+              'Disfagia, odinofagia e hematêmese.',
+              'Vômitos, dor torácica intensa e enfisema subcutâneo cervical.',
+              'Febre, icterícia e dor em hipocôndrio direito.',
+              'Pirose, regurgitação ácida e tosse crônica.',
+              'Hipoglicemia, glicemia < 50 mg/dL e melhora após glicose.'
+            ],
+            correctIndex: 1,
+            explanation: 'A Tríade de Mackler (vômitos incoercíveis, dor torácica baixa/retroesternal súbita e enfisema subcutâneo) é o quadro clássico da Síndrome de Boerhaave.'
+          },
+          {
+            id: 'u11_q9',
+            question: 'De acordo com a Classificação de Siewert para adenocarcinomas da junção esofagogástrica (JEG), um tumor cujo epicentro localiza-se a 3 cm abaixo da linha Z (subcárdico) é classificado como:',
+            options: [
+              'Siewert Tipo I — tratado como câncer de esôfago.',
+              'Siewert Tipo II — carcinoma da cárdia verdadeira.',
+              'Siewert Tipo III — estadiado e tratado como câncer gástrico.',
+              'Carcinoma espinocelular do terço médio.',
+              'Tumor estromal gastrointestinal (GIST).'
+            ],
+            correctIndex: 2,
+            explanation: 'Siewert Tipo I: 1 a 5 cm acima da linha Z (esôfago distal); Tipo II: 1 cm acima até 2 cm abaixo da linha Z (cárdia); Tipo III: 2 a 5 cm abaixo da linha Z (subcárdico, tratado como adenocarcinoma gástrico).'
+          },
+          {
+            id: 'u11_q10',
+            question: 'Qual é o exame de escolha para o estadiamento loco-regional (profundidade de invasão parietal "T" e acometimento linfonodal periesofágico "N") do carcinoma de esôfago?',
+            options: [
+              'Radiografia contrastada de esôfago com bário.',
+              'Ecoendoscopia (ultrassonografia endoscópica - EUS).',
+              'Manometria esofágica de alta resolução.',
+              'pHmetria esofágica prolongada.',
+              'Arteriografia seletiva do tronco celíaco.'
+            ],
+            correctIndex: 1,
+            explanation: 'A ecoendoscopia (EUS) permite visualizar as camadas da parede esofágica com altíssima precisão, distinguindo tumores T1a (candidatos à ressecção endoscópica) de T1b-T4a (que necessitam de neoadjuvância/esofagectomia).'
+          }
+        ]
+      },
+
+      // --------------------------------------------------------------------------
+      // UNIDADE 12: AFECÇÕES CIRÚRGICAS DO ESTÔMAGO (16/11)
+      // --------------------------------------------------------------------------
+      {
+        id: 'u12',
+        shortTitle: 'Unidade 12',
+        title: 'Unidade 12: Afecções Cirúrgicas do Estômago',
+        date: '16/11',
+        subtitle: 'Irrigação e fisiologia gástrica, Doença Ulcerosa Péptica (Johnson), síndromes pós-gastrectomia, Adenocarcinoma (Lauren/Borrmann) e GIST.',
+        topics: ['Irrigação & Células Gástricas', 'DUP & Classificação de Johnson', 'Billroth I/II, Y Roux & Dumping', 'Adenocarcinoma (Lauren & D2)', 'GIST (CD117 / Imatinibe)'],
+        summarySections: [
+          {
+            title: '1. Anatomia Vascular & Fisiologia Secretora do Estômago',
+            badge: 'Anatomia & Fisiologia',
+            color: 'sky',
+            content: `
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-sky-700 dark:text-sky-400 mb-2">🩸 Irrigação Arterial (100% Tronco Celíaco!)</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Pequena Curvatura:</strong> Artéria <em>gástrica esquerda</em> (ramo direto do tronco celíaco) + Artéria <em>gástrica direita</em> (ramo da artéria hepática própria).</li>
+                    <li><strong>Grande Curvatura:</strong> Artéria <em>gastroepiploica direita</em> (ramo da artéria gastroduodenal) + Artéria <em>gastroepiploica esquerda</em> (ramo da artéria esplênica).</li>
+                    <li><strong>Fundo Gástrico:</strong> Artérias <em>gástricas curtas</em> e <em>gástrica posterior</em> (ramos da artéria esplênica).</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-teal-700 dark:text-teal-400 mb-2">🔬 Tipos Celulares da Mucosa Gástrica</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Células Parietais (Oxínticas):</strong> Corpo e fundo &rarr; secretam <strong>HCl</strong> e <strong>Fator Intrínseco</strong> (absorção de vitamina B12 no íleo terminal).</li>
+                    <li><strong>Células Principais (Zimogênicas):</strong> Corpo e fundo &rarr; secretam <strong>Pepsinogênio</strong>.</li>
+                    <li><strong>Células G:</strong> Antro &rarr; secretam <strong>Gastrina</strong> (estimula células parietais e ECL).</li>
+                    <li><strong>Células D:</strong> Antro e corpo &rarr; secretam <strong>Somatostatina</strong> (inibe gastrina e HCl).</li>
+                    <li><strong>Células ECL (Enterocromafins):</strong> Corpo &rarr; secretam <strong>Histamina</strong> (via receptor H2).</li>
+                  </ul>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '2. Doença Ulcerosa Péptica (DUP) & Síndromes Pós-Gastrectomia',
+            badge: 'Cirurgia Gástrica Benigna',
+            color: 'teal',
+            content: `
+              <div class="space-y-4 text-sm">
+                <div class="p-4 rounded-xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800/60">
+                  <h4 class="font-bold text-teal-800 dark:text-teal-300 mb-2">📊 Classificação de Johnson (Úlceras Gástricas) & Conduta</h4>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 mb-3">
+                    <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-teal-100 dark:border-teal-900">
+                      <strong class="text-teal-700 dark:text-teal-400">Tipo I (Mais comum - 60%):</strong> Pequena curvatura / incisura angular. <strong>Hipocloridria</strong> (falha na barreira mucosa).
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-teal-100 dark:border-teal-900">
+                      <strong class="text-rose-700 dark:text-rose-400">Tipo II:</strong> Corpo gástrico + Úlcera duodenal ativa/cicatrizada. <strong>Hipercloridria</strong>.
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-teal-100 dark:border-teal-900">
+                      <strong class="text-rose-700 dark:text-rose-400">Tipo III:</strong> Região pré-pilórica. Comporta-se como duodenal (<strong>Hipercloridria</strong>).
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-teal-100 dark:border-teal-900">
+                      <strong class="text-teal-700 dark:text-teal-400">Tipo IV:</strong> Pequena curvatura alta (próxima à JEG). <strong>Hipocloridria</strong> (Cirurgia de Csendes).
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-teal-100 dark:border-teal-900">
+                      <strong class="text-amber-700 dark:text-amber-400">Tipo V:</strong> Induzida por <strong>AINEs</strong> (qualquer localização).
+                    </div>
+                  </div>
+                  <p class="text-slate-700 dark:text-slate-300"><strong>Indicações Cirúrgicas na DUP:</strong> Perfuração, Hemorragia refratária à endoscopia (<em>úlcera duodenal posterior erode a artéria gastroduodenal; pequena curvatura erode a gástrica esquerda</em>), Obstrução pilórica e Intratabilidade clínica. <strong>Regra de Ouro:</strong> Toda úlcera gástrica operada deve ser biopsiada/ressecada para descartar adenocarcinoma!</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                  <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
+                    <div class="font-bold text-amber-800 dark:text-amber-300">Dumping Precoce (15-30 min)</div>
+                    <p class="text-slate-700 dark:text-slate-300 mt-1 text-xs">Chegada rápida de quimo hiperosmolar ao delgado &rarr; sequestro de líquido intravascular para a luz &rarr; sintomas <strong>vasomotores</strong> (taquicardia, sudorese, hipotensão) + <strong>GI</strong> (cólica, diarreia). Tratamento: refeições fracionadas, secas (líquidos 30 min após) e pobres em carboidratos simples.</p>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
+                    <div class="font-bold text-amber-800 dark:text-amber-300">Dumping Tardio (2-3 horas)</div>
+                    <p class="text-slate-700 dark:text-slate-300 mt-1 text-xs">Absorção rápida de glicose &rarr; pico exagerado de insulina &rarr; <strong>hipoglicemia reativa</strong> (tremores, sudorese fria, confusão sem sintomas GI). Melhora com ingestão de glicose.</p>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/50">
+                    <div class="font-bold text-rose-800 dark:text-rose-300">Gastrite Alcalina de Refluxo</div>
+                    <p class="text-slate-700 dark:text-slate-300 mt-1 text-xs">Mais comum pós-<strong>Billroth II</strong>. Dor epigástrica em queimação contínua que <strong>NÃO melhora após vômitos biliosos</strong>. Tratamento definitivo: conversão para <strong>Y de Roux</strong> (alça alimentar de 45-60 cm).</p>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/50">
+                    <div class="font-bold text-indigo-800 dark:text-indigo-300">Síndrome da Alça Aferente</div>
+                    <p class="text-slate-700 dark:text-slate-300 mt-1 text-xs">Obstrução mecânica (angulação/hérnia) da alça aferente pós-BII. Dor epigástrica pós-prandial que <strong>alivia abruptamente após vômito bilioso em jato sem alimentos</strong>.</p>
+                  </div>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '3. Afecções Malignas: Adenocarcinoma Gástrico & GIST',
+            badge: 'Oncologia Gástrica',
+            color: 'rose',
+            content: `
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm mb-4">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-slate-900 dark:text-white mb-2">🧬 Classificação Histológica de Lauren</h4>
+                  <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                    <li><strong>Tipo Intestinal:</strong> Forma estruturas glandulares; associado a fatores ambientais (<em>H. pylori</em>, gastrite atrófica, metaplasia intestinal, dieta rica em nitrosaminas); mais comum em homens idosos; disseminação <strong>hematogênica</strong> (fígado); melhor prognóstico.</li>
+                    <li><strong>Tipo Difuso:</strong> Células pouco coesas em <strong>"anel de sinete"</strong>; mutação/perda da <strong>E-caderina (gene CDH1)</strong>; mais comum em jovens, mulheres e sangue tipo A; disseminação <strong>linfática e peritoneal</strong> (linite plástica - Borrmann IV); pior prognóstico.</li>
+                  </ul>
+                </div>
+
+                <div class="p-4 rounded-xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
+                  <h4 class="font-bold text-rose-800 dark:text-rose-300 mb-2">🔍 Sinais de Doença Avançada / Metastática</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Linfonodo de Virchow (Sinal de Troisier):</strong> Linfonodo supraclavicular esquerdo palpável.</li>
+                    <li><strong>Nódulo da Irmã Maria José:</strong> Metástase subcutânea periumbilical.</li>
+                    <li><strong>Prateleira de Blumer:</strong> Implante peritoneal no fundo de saco de Douglas (palpável ao toque retal).</li>
+                    <li><strong>Tumor de Krukenberg:</strong> Metástase ovariana bilateral (células em anel de sinete).</li>
+                    <li><strong>Linfonodo de Irish:</strong> Linfonodo axilar anterior esquerdo.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60">
+                  <h4 class="font-bold text-sky-800 dark:text-sky-300 mb-1.5">⚔️ Cirurgia do Adenocarcinoma Gástrico</h4>
+                  <p class="text-slate-700 dark:text-slate-300"><strong>Estadiamento:</strong> TC tórax/abdome/pelve + <strong>Laparoscopia diagnóstica</strong> (obrigatória em &ge; cT1b/cT2 para descartar carcinomatose peritoneal oculta).<br><strong>Conduta:</strong> Quimioterapia perioperatória (<strong>esquema FLOT</strong>) + Gastrectomia <strong>Subtotal</strong> (tumores distais/antrais, margem &ge; 2-3 cm no intestinal ou &ge; 5 cm no difuso) ou <strong>Total</strong> (proximais/corpo) + <strong>Linfadenectomia D2</strong> (padrão-ouro, mínimo 15-16 linfonodos).</p>
+                </div>
+                <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60">
+                  <h4 class="font-bold text-emerald-800 dark:text-emerald-300 mb-1.5">🎯 GIST (Tumor Estromal Gastrointestinal)</h4>
+                  <p class="text-slate-700 dark:text-slate-300">Neoplasia mesenquimal mais comum do TGI (estômago = sítio mais frequente, 60%). Origem nas <strong>células intersticiais de Cajal</strong>; positividade imuno-histoquímica para <strong>CD117 (c-KIT)</strong> em 95%. Disseminação hematogênica/peritoneal (<strong>raramente dá metástase linfonodal</strong>).<br><strong>Tratamento:</strong> Ressecção em cunha (<em>wedge resection</em>) com margens livres <strong>SEM linfadenectomia de rotina</strong> + <strong>Imatinibe</strong> (inibidor de tirosina-quinase) para alto risco ou doença metastática.</p>
+                </div>
+              </div>
+            `
+          }
+        ],
+        cases: [
+          {
+            id: 'u12_c1',
+            title: 'Caso 1 — Úlcera Gástrica Crônica em Incisura Angular',
+            tags: ['Úlcera Péptica', 'Johnson Tipo I', 'Regra de Biópsia'],
+            vignette: 'Homem de 59 anos, tabagista, apresenta dor epigástrica crônica que piora após a alimentação e perda ponderal de 4 kg. EDA revela úlcera de 2,5 cm de bordas elevadas localizada na pequena curvatura gástrica, próxima à incisura angular, sem úlcera duodenal associada. Pesquisa de H. pylori negativa. Após 12 semanas de tratamento pleno com IBP, nova EDA mostra persistência da úlcera.',
+            diagnosis: 'Úlcera gástrica refratária Classificação de Johnson Tipo I (localizada na pequena curvatura / incisura angular, associada à hipocloridria e falha da barreira mucosa). Pelo aspecto endoscópico e refratariedade, há forte suspeita diferencial de adenocarcinoma gástrico ulcerado.',
+            conduct: 'Realização de múltiplas biópsias das bordas e do leito da úlcera (no mínimo 6-8 fragmentos). Havendo indicação cirúrgica por intratabilidade clínica e suspeita neoplásica, realiza-se antrectomia (ressecção da úlcera) com reconstrução a Billroth I ou Y de Roux, sem necessidade de vagotomia (pois o Tipo I cursa com hipocloridria).'
+          },
+          {
+            id: 'u12_c2',
+            title: 'Caso 2 — Hemorragia Digestiva Alta Maciça por Úlcera Duodenal Posterior',
+            tags: ['HDA', 'Artéria Gastroduodenal', 'Urgência Cirúrgica'],
+            vignette: 'Homem de 51 anos dá entrada no PS com hematêmese volumosa e melena há 4 horas. PA 80x50 mmHg, FC 132 bpm, Hb 6,8 g/dL. Após ressuscitação volêmica e hemotransfusão, EDA identifica úlcera profunda de 2 cm na parede posterior do bulbo duodenal com sangramento arterial ativo em jato (Forrest Ia). Realizada terapia endoscópica combinada (injeção de adrenalina + clipe hemostático), porém o paciente apresenta ressangramento maciço com nova instabilidade hemodinâmica 6 horas depois.',
+            diagnosis: 'Hemorragia digestiva alta grave refratária a duas tentativas/falha endoscópica por úlcera duodenal bulbar posterior penetrante, com erosão da artéria gastroduodenal.',
+            conduct: 'Indicação formal de cirurgia de urgência! Acesso por laparotomia mediana, duodenotomia longitudinal anterior no bulbo duodenal, exposição do leito ulceroso posterior e hemostasia cirúrgica direta por sutura em "U" (pontos profundos superior, inferior e medial para ligar a artéria gastroduodenal e o ramo pancreático transverso).'
+          },
+          {
+            id: 'u12_c3',
+            title: 'Caso 3 — Dor Epigástrica Contínua e Vômitos Biliosos Pós-Billroth II',
+            tags: ['Pós-Gastrectomia', 'Gastrite Alcalina', 'Y de Roux'],
+            vignette: 'Mulher de 62 anos, submetida há 3 anos à gastrectomia subtotal com reconstrução a Billroth II, retorna queixando-se de dor epigástrica em queimação constante que piora após as refeições, acompanhada de vômitos biliosos frequentes que NÃO aliviam a dor, além de perda ponderal. EDA mostra mucosa do coto gástrico intensamente hiperemiada, friável e banhada por grande quantidade de bile.',
+            diagnosis: 'Gastrite alcalina de refluxo (gastrite de refluxo biliar), complicação tardia mais frequente após reconstrução a Billroth II devido ao refluxo contínuo das secreções biliopancreáticas para o coto gástrico. Diferencia-se da síndrome da alça aferente porque nesta última a dor alivia subitamente após vômito bilioso em jato.',
+            conduct: 'Após falha do tratamento clínico (sucralfato, colestiramina, pró-cinéticos), o tratamento cirúrgico definitivo consiste na conversão da reconstrução de Billroth II para gastrojejunostomia em Y de Roux (com alça alimentar de pelo menos 45 a 60 cm de extensão para impedir que a bile alcance o coto gástrico).'
+          },
+          {
+            id: 'u12_c4',
+            title: 'Caso 4 — Adenocarcinoma Gástrico Antral Distal Localmente Avançado',
+            tags: ['Câncer Gástrico', 'Lauren Intestinal', 'Linfadenectomia D2'],
+            vignette: 'Homem de 66 anos com história de gastrite atrófica e anemia ferropriva realiza EDA que evidencia lesão ulcerada de bordas infiltrativas (Borrmann III) no antro gástrico, distando 6 cm da cárdia. Biópsia: adenocarcinoma tubular bem diferenciado (Tipo Intestinal de Lauren). TC de tórax e abdome mostra espessamento parietal antral e 3 linfonodos perigástricos aumentados, sem metástases hepáticas ou pulmonares.',
+            diagnosis: 'Adenocarcinoma gástrico distal (antral) Tipo Intestinal de Lauren, Borrmann III, clinicamente localmente avançado (cT3N+M0).',
+            conduct: 'Realização de laparoscopia diagnóstica com lavado peritoneal antes do início do tratamento (para excluir carcinomatose peritoneal oculta). Sendo negativa, realiza-se quimioterapia perioperatória (esquema FLOT — 4 ciclos pré-op + 4 pós-op) associada à gastrectomia subtotal (preserva o fundo gástrico, garantindo margem proximal > 2-3 cm no tipo intestinal) com linfadenectomia D2 e reconstrução em Y de Roux.'
+          },
+          {
+            id: 'u12_c5',
+            title: 'Caso 5 — Lesão Subepitelial Gástrica Positiva para CD117',
+            tags: ['GIST', 'CD117 / c-KIT', 'Ressecção em Cunha'],
+            vignette: 'Mulher de 55 anos realiza EDA por dispepsia leve, sendo identificada lesão subepitelial arredondada de 4,5 cm na parede anterior do corpo gástrico, recoberta por mucosa íntegra com pequena ulceração central. Ecoendoscopia mostra lesão hipoecoica originada da quarta camada (muscular própria). Biópsia guiada revela neoplasia de células fusiformes com imuno-histoquímica fortemente positiva para CD117 (c-KIT) e DOG-1. TC sem metástases.',
+            diagnosis: 'Tumor Estromal Gastrointestinal (GIST) gástrico localizado, originário das células intersticiais de Cajal.',
+            conduct: 'Ressecção cirúrgica completa com margens microscópicas livres (R0), geralmente por meio de ressecção em cunha (wedge resection) videolaparoscópica, evitando ruptura da pseudocápsula tumoral. Não se realiza linfadenectomia de rotina, pois o GIST raramente metastatiza para linfonodos. Avaliar índice mitótico para indicação de terapia adjuvante com Imatinibe.'
+          }
+        ],
+        questions: [
+          {
+            id: 'u12_q1',
+            question: 'A irrigação arterial da pequena curvatura do estômago é formada pela anastomose entre a artéria gástrica esquerda e a artéria gástrica direita, as quais se originam, respectivamente, de quais vasos?',
+            options: [
+              'Tronco celíaco e artéria hepática própria.',
+              'Artéria esplênica e artéria gastroduodenal.',
+              'Artéria mesentérica superior e artéria hepática comum.',
+              'Tronco celíaco e artéria esplênica.',
+              'Artéria gastroduodenal e artéria frênica inferior.'
+            ],
+            correctIndex: 0,
+            explanation: 'A artéria gástrica esquerda é ramo direto do tronco celíaco, enquanto a artéria gástrica direita origina-se habitualmente da artéria hepática própria. Já a grande curvatura é irrigada pelas gastroepiploicas direita (da gastroduodenal) e esquerda (da esplênica).'
+          },
+          {
+            id: 'u12_q2',
+            question: 'Após uma gastrectomia total, o paciente necessita de reposição parenteral vitalícia de vitamina B12 (cianocobalamina) devido à remoção completa das células:',
+            options: [
+              'Principais do antro gástrico.',
+              'Parietais (oxínticas) do corpo e fundo gástrico.',
+              'Células G da mucosa antral.',
+              'Células D produtoras de somatostatina.',
+              'Células caliciformes duodenais.'
+            ],
+            correctIndex: 1,
+            explanation: 'As células parietais (oxínticas), localizadas no corpo e fundo gástrico, produzem tanto o ácido clorídrico (HCl) quanto o fator intrínseco, glicoproteína indispensável para a absorção da vitamina B12 no íleo terminal.'
+          },
+          {
+            id: 'u12_q3',
+            question: 'Segundo a Classificação de Johnson para úlceras gástricas, quais tipos cursam fisiopatologicamente com HIPERCLORIDRIA (semelhante às úlceras duodenais)?',
+            options: [
+              'Tipos I e IV.',
+              'Tipos II e III.',
+              'Apenas o Tipo I.',
+              'Tipos I e V.',
+              'Apenas o Tipo IV.'
+            ],
+            correctIndex: 1,
+            explanation: 'As úlceras gástricas de Johnson Tipo II (úlcera gástrica associada à úlcera duodenal) e Tipo III (úlcera pré-pilórica) cursam com hipersecreção ácida (hipercloridria), enquanto os Tipos I (incisura angular) e IV (alta na pequena curvatura) cursam com hipocloridria.'
+          },
+          {
+            id: 'u12_q4',
+            question: 'Durante cirurgia de urgência por hemorragia digestiva alta refratária decorrente de úlcera penetrante na parede posterior do bulbo duodenal, qual vaso arterial é mais comumente erodido e deve ser ligado?',
+            options: [
+              'Artéria gástrica esquerda.',
+              'Artéria gastroduodenal.',
+              'Artéria esplênica.',
+              'Artéria mesentérica inferior.',
+              'Artéria cólica média.'
+            ],
+            correctIndex: 1,
+            explanation: 'A parede posterior da primeira porção do duodeno (bulbo duodenal) repousa diretamente sobre a artéria gastroduodenal; sua erosão provoca hemorragia arterial maciça.'
+          },
+          {
+            id: 'u12_q5',
+            question: 'Um paciente submetido à gastrectomia subtotal a Billroth II relata tontura, taquicardia, sudorese profusa, cólicas abdominais e diarreia explosiva cerca de 20 minutos após ingerir refeições ricas em carboidratos simples. Esse quadro corresponde à:',
+            options: [
+              'Síndrome de Dumping Tardio (hipoglicemia reativa).',
+              'Síndrome de Dumping Precoce.',
+              'Gastrite alcalina de refluxo.',
+              'Síndrome da alça eferente.',
+              'Deiscência do coto duodenal.'
+            ],
+            correctIndex: 1,
+            explanation: 'O Dumping Precoce ocorre 15-30 minutos após a refeição devido ao esvaziamento gástrico acelerado de conteúdo hiperosmolar no jejuno, provocando influxo de líquido intravascular para a luz intestinal (hipovolemia relativa + sintomas vasomotores e GI).'
+          },
+          {
+            id: 'u12_q6',
+            question: 'Qual é o tratamento cirúrgico definitivo de escolha para um paciente com gastrite alcalina de refluxo grave e refratária após reconstrução gástrica a Billroth II?',
+            options: [
+              'Conversão para reconstrução a Billroth I.',
+              'Conversão para gastrojejunostomia em Y de Roux.',
+              'Vagotomia troncular isolada.',
+              'Piloroplastia à Heineke-Mikulicz.',
+              'Esplenectomia total.'
+            ],
+            correctIndex: 1,
+            explanation: 'A conversão de Billroth II para Y de Roux (com alça alimentar de 45-60 cm) desvia as secreções biliares e pancreáticas distalmente ao coto gástrico, resolvendo a gastrite alcalina.'
+          },
+          {
+            id: 'u12_q7',
+            question: 'Sobre a Classificação Histológica de Lauren para o adenocarcinoma gástrico, assinale a alternativa CORRETA:',
+            options: [
+              'O tipo difuso forma glândulas bem diferenciadas e é mais comum em homens idosos.',
+              'O tipo intestinal está fortemente associado à mutação germinativa da E-caderina (CDH1) e células em anel de sinete.',
+              'O tipo difuso apresenta células pouco coesas ("anel de sinete"), perda de E-caderina, acomete indivíduos mais jovens e possui pior prognóstico.',
+              'O tipo intestinal dissemina-se preferencialmente por via peritoneal e linfática, poupando o fígado.',
+              'Ambos os tipos exigem exatamente a mesma margem cirúrgica proximal de 1 cm.'
+            ],
+            correctIndex: 2,
+            explanation: 'O adenocarcinoma gástrico do tipo difuso de Lauren caracteriza-se por células em anel de sinete sem coesão (perda de E-caderina), acomete pacientes mais jovens, invade difusamente a parede (linite plástica) e exige margem cirúrgica proximal mais ampla (≥ 5 cm).'
+          },
+          {
+            id: 'u12_q8',
+            question: 'No exame físico de um paciente com adenocarcinoma gástrico avançado, a palpação de uma massa endurecida no fundo de saco de Douglas ao toque retal é denominada:',
+            options: [
+              'Linfonodo de Virchow.',
+              'Nódulo da Irmã Maria José.',
+              'Prateleira de Blumer.',
+              'Tumor de Krukenberg.',
+              'Linfonodo de Irish.'
+            ],
+            correctIndex: 2,
+            explanation: 'A Prateleira de Blumer representa implante metastático peritoneal no fundo de saco retouterino/retovesical palpável ao toque retal. Virchow = supraclavicular esquerdo; Irmã Maria José = umbilical; Krukenberg = ovário.'
+          },
+          {
+            id: 'u12_q9',
+            question: 'Antes de iniciar o tratamento neoadjuvante/cirúrgico de um paciente com adenocarcinoma gástrico clinicamente estadiado como cT3N1M0 na tomografia, qual procedimento é formalmente indicado para descartar carcinomatose peritoneal oculta?',
+            options: [
+              'Cintilografia óssea de corpo inteiro.',
+              'Laparoscopia diagnóstica (estadiadora) com lavado peritoneal.',
+              'Colangiopancreatografia retrógrada endoscópica (CPRE).',
+              'Enema opaco com duplo contraste.',
+              'Manometria anorretal.'
+            ],
+            correctIndex: 1,
+            explanation: 'A laparoscopia diagnóstica detecta metástases peritoneais ocultas (não vistas na TC) em até 20-30% dos pacientes com câncer gástrico ≥ cT1b/cT2, evitando laparotomias desnecessárias.'
+          },
+          {
+            id: 'u12_q10',
+            question: 'Sobre os Tumores Estromais Gastrointestinais (GIST) do estômago, assinale a conduta cirúrgica e oncológica CORRETA:',
+            options: [
+              'Exigem gastrectomia total com linfadenectomia D2 sistemática devido ao alto tropismo linfonodal.',
+              'Originam-se das células de Cajal, expressam CD117 (c-KIT) e são tratados com ressecção em cunha com margens livres SEM linfadenectomia de rotina.',
+              'Respondem prontamente à radioterapia exclusiva, dispensando ressecção cirúrgica.',
+              'São diagnosticados exclusivamente pela elevação sérica de alfafetoproteína.',
+              'Apresentam mutação exclusiva do gene KRAS e são tratados com cetuximabe.'
+            ],
+            correctIndex: 1,
+            explanation: 'Os GISTs originam-se das células intersticiais de Cajal, são positivos para CD117 (c-KIT) em 95% dos casos e raramente metastatizam para linfonodos; por isso, realiza-se ressecção em cunha (R0) sem linfadenectomia, associada a Imatinibe nos casos de alto risco.'
+          }
+        ]
+      },
+
+      // --------------------------------------------------------------------------
+      // UNIDADE 13: AFECÇÕES CIRÚRGICAS DO PÂNCREAS (30/11)
+      // --------------------------------------------------------------------------
+      {
+        id: 'u13',
+        shortTitle: 'Unidade 13',
+        title: 'Unidade 13: Afecções Cirúrgicas do Pâncreas',
+        date: '30/11',
+        subtitle: 'Anatomia pancreaticoduodenal, pancreatite aguda (Atlanta & Step-up), pancreatite crônica, cistos pancreáticos, adenocarcinoma (Whipple) e PNETs.',
+        topics: ['Anatomia & Arcadas Vasculares', 'Pancreatite Aguda & Step-Up', 'Pancreatite Crônica (Puestow/Frey)', 'Cistos (Seroso, Mucinoso, IPMN)', 'Adenocarcinoma (Whipple) & PNETs'],
+        summarySections: [
+          {
+            title: '1. Anatomia Cirúrgica & Fisiologia do Pâncreas',
+            badge: 'Anatomia Cirúrgica',
+            color: 'sky',
+            content: `
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-sky-700 dark:text-sky-400 mb-2">📐 Relações Anatômicas & Ductos</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Órgão Retroperitoneal:</strong> Cabeça (emoldurada pelo arco duodenal), processo uncinado (passa <em>posteriormente</em> aos vasos mesentéricos superiores), colo (anterior à formação da veia porta), corpo e cauda (única porção intraperitoneal no ligamento esplenorrenal).</li>
+                    <li><strong>Ducto de Wirsung (Principal):</strong> Percorre todo o órgão e une-se ao colédoco na ampola de Vater (papila duodenal maior).</li>
+                    <li><strong>Ducto de Santorini (Acessório):</strong> Drena porção anterossuperior da cabeça na papila duodenal menor.</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60">
+                  <h4 class="font-bold text-amber-800 dark:text-amber-300 mb-2">🩸 Irrigação Compartilhada (Conceito de Prova!)</h4>
+                  <p class="text-slate-700 dark:text-slate-300">A cabeça do pâncreas e o duodeno compartilham o mesmo suprimento arterial através das <strong>arcadas pancreaticoduodenais anterior e posterior</strong> (ramos da artéria gastroduodenal [tronco celíaco] e da artéria mesentérica superior). Por isso, <strong>não é possível ressecar a cabeça do pâncreas sem ressecar o duodeno</strong> (isquemia duodenal), exigindo a duodenopancreatectomia (Whipple). Corpo e cauda são irrigados pela artéria esplênica.</p>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '2. Pancreatite Aguda (Atlanta Revisada) & Pancreatite Crônica',
+            badge: 'Benignas do Pâncreas',
+            color: 'teal',
+            content: `
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800/60">
+                  <h4 class="font-bold text-teal-800 dark:text-teal-300 mb-2">🔥 Pancreatite Aguda (PA)</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Etiologias:</strong> 1º <strong>Biliar (cálculos - 40-45%)</strong> &gt; 2º <strong>Alcoólica (30%)</strong> &gt; hipertrigliceridemia (&gt; 1000 mg/dL), pós-CPRE, fármacos.</li>
+                    <li><strong>Diagnóstico (2 de 3 critérios):</strong> (1) Dor epigástrica típica em faixa irradiada para dorso; (2) Amilase ou <strong>Lipase &ge; 3x</strong> LSN; (3) Imagem característica.</li>
+                    <li><strong>Gravidade (Atlanta):</strong> <em>Leve</em> (sem falência orgânica nem complicação local); <em>Moderadamente grave</em> (falência transitória &lt; 48h ou complicação local); <em>Grave</em> (falência orgânica persistente &gt; 48h).</li>
+                    <li><strong>Conduta Inicial:</strong> Hidratação controlada com <strong>Ringer Lactato</strong>, analgesia, <strong>nutrição enteral precoce</strong> (evita translocação bacteriana), <strong>NÃO usar ATB profilático</strong>. Na <strong>PA biliar leve: colecistectomia na mesma internação!</strong></li>
+                    <li><strong>Necrose Infectada:</strong> Carbapenêmico + <strong>Abordagem Step-Up</strong> (1º drenagem percutânea/endoscópica &rarr; 2º necrosectomia minimamente invasiva após &ge; 4 semanas).</li>
+                    <li><strong>Pseudocisto (&gt; 4-6 sem, &gt; 6 cm sintomático):</strong> Cistogastrostomia endoscópica ou cirúrgica.</li>
+                  </ul>
+                </div>
+
+                <div class="p-4 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60">
+                  <h4 class="font-bold text-indigo-800 dark:text-indigo-300 mb-2">🧱 Pancreatite Crônica & Neoplasias Císticas</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Pancreatite Crônica:</strong> Etilismo crônico (70-80%) + tabagismo. <strong>Tríade clássica tardia</strong> (&gt; 90% destruição): <em>calcificações pancreáticas + esteatorreia + diabetes mellitus</em>.</li>
+                    <li><strong>Cirurgia para Dor Intratável na PC:</strong>
+                      <br>&bull; Ducto de Wirsung dilatado (&ge; 7 mm) sem massa na cabeça &rarr; <strong>Cirurgia de Puestow-Partington-Rochelle</strong> (pancreaticojejunostomia longitudinal látero-lateral).
+                      <br>&bull; Massa inflamatória na cabeça do pâncreas &rarr; <strong>Cirurgia de Frey</strong> ou <strong>Beger</strong>.</li>
+                    <li><strong>Neoplasias Císticas:</strong>
+                      <br>&bull; <em>Cistoadenoma Seroso:</em> Benigno, mulheres idosas, cicatriz central estrelada ("favo de mel"), CEA baixo &rarr; conservar.
+                      <br>&bull; <em>Cistoadenoma Mucinoso:</em> Mulheres meia-idade, corpo/cauda, estroma ovariano, CEA alto, potencial maligno &rarr; ressecar.
+                      <br>&bull; <em>IPMN:</em> Comunica com ducto pancreático, mucina pela papila ("olho de peixe"); ducto principal tem alto risco maligno &rarr; ressecar.</li>
+                  </ul>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: '3. Neoplasias Malignas: Adenocarcinoma Ductal (Whipple) & Tumores Neuroendócrinos',
+            badge: 'Oncologia Pancreática',
+            color: 'rose',
+            content: `
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
+                  <h4 class="font-bold text-rose-800 dark:text-rose-300 mb-2">🦀 Adenocarcinoma Ductal de Pâncreas</h4>
+                  <ul class="space-y-1.5 text-slate-700 dark:text-slate-300">
+                    <li><strong>Fatores de Risco:</strong> <strong>Tabagismo</strong> (principal fator evitável), idade avançada, pancreatite crônica, DM de início recente, síndromes genéticas (BRCA2, Peutz-Jeghers, FAMMM).</li>
+                    <li><strong>Cabeça (60-70%):</strong> <strong>Icterícia obstrutiva progressiva e indolor</strong> + colúria + acolia + prurido + <strong>Sinal de Courvoisier-Terrier</strong> (vesícula biliar palpável e indolor).</li>
+                    <li><strong>Corpo/Cauda:</strong> Diagnóstico tardio, dor epigástrica irradiada para dorso, perda ponderal acentuada, tromboflebite migratória (<em>Sinal de Trousseau</em>).</li>
+                    <li><strong>Estadiamento & Marcador:</strong> <strong>TC abdome com contraste trifásico (protocolo pâncreas)</strong> avalia contato com AMS, VMS, tronco celíaco e artéria hepática. Marcador: <strong>CA 19-9</strong>.</li>
+                    <li><strong>Cirurgia Curativa:</strong> Cabeça &rarr; <strong>Duodenopancreatectomia (Cirurgia de Whipple)</strong> (principal complicação: <em>fístula pancreática</em>); Corpo/cauda &rarr; <strong>Pancreatectomia distal + esplenectomia</strong>.</li>
+                  </ul>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                  <h4 class="font-bold text-slate-900 dark:text-white mb-2">🧪 Tumores Neuroendócrinos Pancreáticos (PNETs)</h4>
+                  <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+                    <li><strong>Insulinoma:</strong> PNET funcionante mais comum; 90% benignos, únicos e pequenos (&lt; 2 cm). Manifesta-se pela <strong>Tríade de Whipple</strong>: (1) sintomas neuroglicopênicos/adrenérgicos em jejum; (2) glicemia &lt; 50 mg/dL; (3) alívio imediato após administração de glicose. Insulina e peptídeo C elevados. <strong>Tratamento:</strong> Enucleação ou ressecção segmentar.</li>
+                    <li><strong>Gastrinoma (Síndrome de Zollinger-Ellison):</strong> Úlceras pépticas múltiplas, refratárias ou em localizações atípicas (duodeno distal/jejuno) + diarreia secretória. 70-90% localizam-se no <strong>Trígono de Passaro</strong> (junção cístico-colédoco, 2ª/3ª porção duodenal e colo/cabeça do pâncreas). Frequentemente maligno e associado à <strong>NEM-1</strong> (hiperparatireoidismo + adenoma hipofisário + PNET).</li>
+                  </ul>
+                </div>
+              </div>
+            `
+          }
+        ],
+        cases: [
+          {
+            id: 'u13_c1',
+            title: 'Caso 1 — Pancreatite Aguda Biliar Leve: Quando Operar a Vesícula?',
+            tags: ['Pancreatite Biliar', 'Atlanta Leve', 'Colecistectomia'],
+            vignette: 'Mulher de 39 anos, obesa, interna com dor epigástrica intensa em faixa irradiada para o dorso há 10 horas, associada a vômitos. Exames: Lipase 1.850 U/L (VR < 60), Amilase 1.120 U/L, TGO 210 U/L, Bilirrubinas totais 1,6 mg/dL, PCR 32 mg/L, creatinina 0,8 mg/dL. USG de abdome: múltiplos microcálculos na vesícula biliar, colédoco de 5 mm sem cálculos visíveis. Após 48 horas de hidratação venosa e analgesia, encontra-se sem dor, afebril e aceitando dieta oral.',
+            diagnosis: 'Pancreatite aguda de etiologia biliar, forma Leve pela Classificação de Atlanta Revisada (ausência de falência orgânica e de complicações locais).',
+            conduct: 'Realização de colecistectomia videolaparoscópica (com colangiografia intraoperatória) NA MESMA INTERNAÇÃO, assim que houver resolução clínica da dor e melhora laboratorial. Adiar a colecistectomia para o ambulatório implica em risco de até 25-30% de recorrência grave da pancreatite biliar nas semanas seguintes.'
+          },
+          {
+            id: 'u13_c2',
+            title: 'Caso 2 — Pancreatite Aguda Grave com Necrose Pancreática Infectada',
+            tags: ['Necrose Infectada', 'Abordagem Step-Up', 'PA Grave'],
+            vignette: 'Homem de 48 anos, internado em UTI há 26 dias por pancreatite aguda grave alcoólica, evolui com piora do estado geral, febre persistente (39,1 °C), taquicardia e leucocitose de 24.000/mm³ com desvio à esquerda. TC de abdome com contraste evidencia grande coleção necrótica encapsulada (Walled-Off Necrosis - WON) substituindo 50% do corpo e cauda do pâncreas, contendo múltiplas bolhas de gás em seu interior.',
+            diagnosis: 'Necrose pancreática delimitada infectada (confirmada pela presença de gás retroperitoneal na TC, patognomônico de infecção por bactérias produtoras de gás, dispensando punção diagnóstica).',
+            conduct: 'Início imediato de antibioticoterapia de amplo espectro com boa penetração pancreática (ex: meropenem ou imipenem) associado à abordagem escalonada minimamente invasiva ("Step-Up Approach"): primeiro realiza-se drenagem percutânea retroperitoneal ou drenagem endoscópica transgástrica guiada por ecoendoscopia; caso não haja melhora clínica após 48-72h, avança-se para necrosectomia minimamente invasiva (VARD), evitando necrosectomia aberta precoce.'
+          },
+          {
+            id: 'u13_c3',
+            title: 'Caso 3 — Pancreatite Crônica Alcoólica com Dor Intratável e Wirsung Dilatado',
+            tags: ['Pancreatite Crônica', 'Cirurgia de Puestow'],
+            vignette: 'Homem de 53 anos, ex-etilista em abstinência há 2 anos, portador de pancreatite crônica calcificante, apresenta dor abdominal epigástrica diária e incapacitante refratária a analgésicos potentes e bloqueio de plexo celíaco. TC e ColangioRM mostram múltiplas calcificações parenquimatosas e dilatação difusa e irregular do ducto pancreático principal (Wirsung) atingindo 10 mm de diâmetro ("cadeia de lagos"), sem massa na cabeça do pâncreas.',
+            diagnosis: 'Pancreatite crônica com dor intratável associada à hipertensão ductal por dilatação significativa do ducto de Wirsung (≥ 7 mm), sem aumento inflamatório da cabeça do pâncreas.',
+            conduct: 'Derivação pancreatojejunal longitudinal látero-lateral em Y de Roux (Cirurgia de Puestow-Partington-Rochelle). Esse procedimento descomprime todo o ducto pancreático principal preservando o parênquima endócrino e exócrino residual. (Caso houvesse massa inflamatória na cabeça do pâncreas, indicar-se-ia a Cirurgia de Frey ou de Beger).'
+          },
+          {
+            id: 'u13_c4',
+            title: 'Caso 4 — Icterícia Indolor e Vesícula Palpável em Tabagista',
+            tags: ['Câncer de Pâncreas', 'Courvoisier-Terrier', 'Whipple'],
+            vignette: 'Homem de 69 anos, tabagista de 40 maços-ano, apresenta icterícia progressiva há 3 semanas, colúria, acolia fecal, prurido intenso e perda de 8 kg, sem dor abdominal ou febre. Exame físico: ictérico 4+/4+, vesícula biliar palpável no hipocôndrio direito, globosa e indolor. Laboratório: Bilirrubina total 14,2 mg/dL (direta 12,1 mg/dL), Fosfatase Alcalina 680 U/L, CA 19-9: 420 U/mL. TC trifásica protocolo pâncreas: massa hipovascular de 2,8 cm na cabeça do pâncreas com planos adiposos preservados em relação à artéria e veia mesentéricas superiores e tronco celíaco, sem metástases.',
+            diagnosis: 'Adenocarcinoma ductal de cabeça de pâncreas clinicamente ressecável, apresentando o clássico Sinal de Courvoisier-Terrier (vesícula biliar palpável e indolor em paciente ictérico por obstrução neoplásica periampular).',
+            conduct: 'Tratamento cirúrgico curativo por meio de Duodenopancreatectomia (Cirurgia de Whipple ou variante com preservação pilórica de Traverso-Longmire), seguida de quimioterapia adjuvante (mFOLFIRINOX ou gemcitabina/capecitabina). Não há necessidade de drenagem biliar pré-operatória de rotina em pacientes candidatos à cirurgia imediata, exceto se colangite, prurido intratável ou neoadjuvância.'
+          },
+          {
+            id: 'u13_c5',
+            title: 'Caso 5 — Episódios de Hipoglicemia Grave em Jejum Revertidos por Glicose',
+            tags: ['Insulinoma', 'Tríade de Whipple', 'Enucleação'],
+            vignette: 'Mulher de 36 anos procura o ambulatório por episódios recorrentes nos últimos 6 meses de sudorese fria, tremores, palpitações, visão turva e confusão mental que ocorrem sempre no final da manhã em jejum ou após exercício físico. Durante uma crise no hospital, registrou-se glicemia capilar de 38 mg/dL, com reversão completa dos sintomas 3 minutos após infusão de glicose hipertônica EV. Teste do jejum prolongado confirmou hiperinsulinemia endógena com peptídeo C elevado. TC/Ecoendoscopia mostrou nódulo hipervascular de 1,4 cm na transição corpo-cauda do pâncreas, distante do ducto de Wirsung.',
+            diagnosis: 'Insulinoma pancreático (tumor neuroendócrino pancreático funcionante mais comum), diagnosticado clinicamente pela clássica Tríade de Whipple (sintomas de hipoglicemia, glicemia < 50 mg/dL e alívio após administração de glicose).',
+            conduct: 'Por serem benignos em cerca de 90% dos casos e pequenos (< 2 cm), quando localizados superficialmente e distantes do ducto pancreático principal (Wirsung), o tratamento cirúrgico de escolha é a enucleação tumoral (preservando ao máximo o parênquima pancreático). Caso esteja aderido ao Wirsung na cauda, realiza-se pancreatectomia distal.'
+          }
+        ],
+        questions: [
+          {
+            id: 'u13_q1',
+            question: 'Por qual motivo anatômico fundamental não é possível realizar a ressecção isolada da cabeça do pâncreas sem ressecar simultaneamente o arco duodenal (duodenopancreatectomia)?',
+            options: [
+              'Porque o ducto de Wirsung atravessa a parede posterior do estômago.',
+              'Porque a cabeça do pâncreas e o duodeno compartilham a mesma irrigação arterial através das arcadas pancreaticoduodenais anterior e posterior.',
+              'Porque a veia porta passa no interior da luz duodenal.',
+              'Porque o processo uncinado é revestido por peritônio visceral duodenal.',
+              'Porque a artéria esplênica nutre exclusivamente a primeira porção do duodeno.'
+            ],
+            correctIndex: 1,
+            explanation: 'A cabeça do pâncreas e o duodeno compartilham as arcadas arteriais pancreaticoduodenais (oriundas da gastroduodenal e da mesentérica superior). A ressecção isolada da cabeça pancreática provocaria isquemia e necrose duodenal inevitáveis.'
+          },
+          {
+            id: 'u13_q2',
+            question: 'De acordo com a Classificação de Atlanta Revisada, uma pancreatite aguda em que o paciente desenvolve insuficiência respiratória e lesão renal aguda que persistem por mais de 48 horas é classificada como:',
+            options: [
+              'Pancreatite aguda leve.',
+              'Pancreatite aguda moderadamente grave.',
+              'Pancreatite aguda grave.',
+              'Pancreatite intersticial edematosa não complicada.',
+              'Pancreatite crônica agudizada.'
+            ],
+            correctIndex: 2,
+            explanation: 'Na Classificação de Atlanta Revisada: Leve = sem falência orgânica e sem complicações locais; Moderadamente grave = falência orgânica transitória (< 48h) e/ou complicações locais; Grave = falência orgânica persistente (> 48h).'
+          },
+          {
+            id: 'u13_q3',
+            question: 'Qual é o momento ideal para realizar a colecistectomia videolaparoscópica em um paciente internado por pancreatite aguda de etiologia biliar forma LEVE?',
+            options: [
+              'Após 6 meses de acompanhamento ambulatorial com ácido ursodesoxicólico.',
+              'Durante a mesma internação hospitalar, assim que houver resolução clínica da dor e melhora laboratorial.',
+              'Nas primeiras 6 horas de admissão, independentemente da dor ou estabilidade clínica.',
+              'Apenas se o paciente desenvolver pseudocisto pancreático infectado.',
+              'Não há indicação de colecistectomia se a CPRE já tiver sido realizada.'
+            ],
+            correctIndex: 1,
+            explanation: 'Na pancreatite aguda biliar leve, a colecistectomia deve ser realizada na mesma internação para prevenir novos episódios recorrentes de pancreatite (que ocorrem em até 30% dos casos nas primeiras semanas pós-alta).'
+          },
+          {
+            id: 'u13_q4',
+            question: 'Um paciente na 4ª semana de evolução de pancreatite aguda grave apresenta febre alta, leucocitose e tomografia computadorizada demonstrando necrose pancreática delimitada (WON) com bolhas de gás em seu interior. Qual é a estratégia terapêutica padrão-ouro atual?',
+            options: [
+              'Laparotomia exploradora imediata com pancreatectomia total.',
+              'Antibioticoterapia de amplo espectro e abordagem "Step-Up" (drenagem percutânea ou endoscópica inicial, seguida de necrosectomia minimamente invasiva se necessário).',
+              'Observação clínica exclusiva sem antibióticos até completar 12 semanas.',
+              'Drenagem cirúrgica aberta externa com marsupialização da retrocavidade.',
+              'Infusão venosa contínua de octreotide em altas doses como monoterapia.'
+            ],
+            correctIndex: 1,
+            explanation: 'A presença de gás na necrose pancreática confirma infecção. A abordagem Step-Up (ATB + drenagem percutânea/endoscópica inicial, escalonando para necrosectomia minimamente invasiva apenas se não houver melhora) reduziu drasticamente a mortalidade em comparação à necrosectomia aberta precoce.'
+          },
+          {
+            id: 'u13_q5',
+            question: 'Na pancreatite crônica alcoólica com dor abdominal intratável, quando o paciente apresenta dilatação difusa do ducto de Wirsung (≥ 7 mm) sem massa inflamatória na cabeça do pâncreas, qual é a cirurgia de escolha?',
+            options: [
+              'Duodenopancreatectomia cefálica (Cirurgia de Whipple).',
+              'Pancreaticojejunostomia longitudinal látero-lateral (Cirurgia de Puestow-Partington-Rochelle).',
+              'Pancreatectomia distal com esplenectomia.',
+              'Enucleação cefálica.',
+              'Gastrectomia subtotal com reconstrução a Billroth I.'
+            ],
+            correctIndex: 1,
+            explanation: 'A cirurgia de Puestow-Partington-Rochelle realiza a abertura longitudinal de todo o ducto de Wirsung dilatado (≥ 7 mm) e sua anastomose látero-lateral com uma alça jejunal em Y de Roux, descomprimindo o sistema ductal e preservando o parênquima.'
+          },
+          {
+            id: 'u13_q6',
+            question: 'Sobre as neoplasias císticas do pâncreas, qual lesão acomete preferencialmente mulheres idosas, possui aspecto microcístico em "favo de mel" com cicatriz central estrelada na TC, apresenta CEA baixo no líquido cístico e comportamento benigno?',
+            options: [
+              'Cistoadenoma mucinoso.',
+              'Cistoadenoma seroso.',
+              'Neoplasia mucinosa papilar intraductal (IPMN) de ducto principal.',
+              'Adenocarcinoma ductal cístico.',
+              'Tumor sólido pseudopapilar de Frantz.'
+            ],
+            correctIndex: 1,
+            explanation: 'O cistoadenoma seroso é uma lesão benigna ("lesão da avó") com cicatriz central estrelada em 20-30% dos casos e CEA baixo (< 5 ng/mL). Pode ser acompanhado conservadoramente se assintomático, ao contrário das lesões mucinosas (potencial maligno).'
+          },
+          {
+            id: 'u13_q7',
+            question: 'A presença de vesícula biliar palpável e indolor em um paciente com icterícia obstrutiva progressiva e indolor constitui o Sinal de Courvoisier-Terrier, que sugere fortemente:',
+            options: [
+              'Colecistite aguda calculosa impactada no infundíbulo.',
+              'Neoplasia maligna periampular (como adenocarcinoma de cabeça de pâncreas) obstruindo o colédoco distal.',
+              'Hepatite viral aguda fulminante.',
+              'Pancreatite aguda leve por hipertrigliceridemia.',
+              'Coledocolitíase primária com vesícula escleroatrófica.'
+            ],
+            correctIndex: 1,
+            explanation: 'Na coledocolitíase crônica, a vesícula costuma estar fibrosada/escleroatrófica e não distende. Já na obstrução neoplásica periampular (cabeça de pâncreas, colangiocarcinoma distal, tumor de papila), a vesícula tem parede elástica e se distende de forma indolor (Sinal de Courvoisier-Terrier).'
+          },
+          {
+            id: 'u13_q8',
+            question: 'Qual é o exame de imagem padrão-ouro para avaliar a ressecabilidade local (relação anatômica com artéria/veia mesentéricas superiores, tronco celíaco e artéria hepática) de um adenocarcinoma de cabeça de pâncreas?',
+            options: [
+              'Ultrassonografia abdominal transabdominal.',
+              'Tomografia computadorizada de abdome com contraste trifásico (protocolo pâncreas).',
+              'Radiografia simples de abdome em ortostase.',
+              'Cintilografia biliar com DISIDA.',
+              'Colangiografia transparieto-hepática.'
+            ],
+            correctIndex: 1,
+            explanation: 'A TC multidetectores trifásica (fases arterial, parenquimatosa pancreática e portal) é o padrão-ouro para estadiar o adenocarcinoma pancreático e classificar o tumor como ressecável, borderline ou localmente avançado/irressecável.'
+          },
+          {
+            id: 'u13_q9',
+            question: 'Na duodenopancreatectomia (Cirurgia de Whipple), são realizadas três anastomoses para reconstrução do trânsito gastrointestinal e biliopancreático. Qual é a principal e mais temida complicação cirúrgica precoce desse procedimento?',
+            options: [
+              'Fístula pancreática (deiscência da anastomose pancreatojejunal).',
+              'Estenose da válvula ileocecal.',
+              'Hérnia inguinal direta.',
+              'Volvo de sigmoide.',
+              'Perfuração de divertículo de Zenker.'
+            ],
+            correctIndex: 0,
+            explanation: 'A fístula pancreática pós-operatória (extravasamento de suco pancreático rico em enzimas digestivas pela anastomose pancreatoentérica) é a principal causa de morbidade, sepse e hemorragia pós-Whipple.'
+          },
+          {
+            id: 'u13_q10',
+            question: 'A Síndrome de Zollinger-Ellison (úlceras pépticas múltiplas, graves, em localizações atípicas como duodeno distal e diarreia secretória) é causada por um gastrinoma, que em 70% a 90% das vezes localiza-se em uma região anatômica conhecida como:',
+            options: [
+              'Trígono de Hasselbach.',
+              'Trígono de Passaro.',
+              'Triângulo da Dor.',
+              'Trígono de Killian.',
+              'Espaço de Traube.'
+            ],
+            correctIndex: 1,
+            explanation: 'O Trígono de Passaro é delimitado pela junção dos ductos cístico e colédoco (superiormente), pela junção da 2ª e 3ª porções do duodeno (inferiormente) e pela junção do colo e cabeça do pâncreas (medialmente), abrigando a grande maioria dos gastrinomas.'
+          }
+        ]
+      }
+    ];
+
+    // ============================================================================
+    // ESTADO DA APLICAÇÃO & PERSISTÊNCIA EM LOCALSTORAGE
+    // ============================================================================
+    const STORAGE_KEY = 'memorex_cc1_pr2_state_v1';
+
+    const defaultState = {
+      activeUnit: 'u9',
+      activeTab: 'resumo', // 'resumo' | 'casos' | 'questoes'
+      reviewedCases: {},   // { 'u9_c1': true, ... }
+      answers: {},         // { 'u9_q1': 0, ... }
+      questionFilter: 'all', // 'all' | 'wrong' | 'unanswered'
+      darkMode: false
+    };
+
+    let state = loadState();
+    let pendingModalAction = null;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { ...defaultState };
+        const parsed = JSON.parse(raw);
+        return {
+          ...defaultState,
+          ...parsed,
+          reviewedCases: parsed.reviewedCases || {},
+          answers: parsed.answers || {}
+        };
+      } catch (e) {
+        console.error('Erro ao ler estado:', e);
+        return { ...defaultState };
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.error('Erro ao salvar estado:', e);
+      }
+    }
+
+    // ============================================================================
+    // UTILITÁRIOS DE UI (TEMA, TOAST, MODAL CUSTOMIZADO)
+    // ============================================================================
+    function applyTheme() {
+      const htmlEl = document.documentElement;
+      const iconEl = document.getElementById('theme-icon');
+      const labelEl = document.getElementById('theme-label');
+      if (state.darkMode) {
+        htmlEl.classList.add('dark');
+        iconEl.textContent = '☀️';
+        labelEl.textContent = 'Claro';
+      } else {
+        htmlEl.classList.remove('dark');
+        iconEl.textContent = '🌙';
+        labelEl.textContent = 'Escuro';
+      }
+    }
+
+    let toastTimer = null;
+    function showToast(msg, icon = '✅') {
+      const box = document.getElementById('toast-box');
+      document.getElementById('toast-msg').textContent = msg;
+      document.getElementById('toast-icon').textContent = icon;
+      box.classList.remove('hidden');
+      box.classList.add('flex');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        box.classList.add('hidden');
+        box.classList.remove('flex');
+      }, 2600);
+    }
+
+    function openConfirmModal(title, message, onConfirm) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-message').textContent = message;
+      pendingModalAction = onConfirm;
+      const modal = document.getElementById('confirm-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeConfirmModal() {
+      const modal = document.getElementById('confirm-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      pendingModalAction = null;
+    }
+
+    // ============================================================================
+    // CÁLCULO DE MÉTRICAS E PROGRESSO
+    // ============================================================================
+    function getStats() {
+      let totalCorrect = 0;
+      let totalAnswered = 0;
+      let totalCasesReviewed = 0;
+
+      const unitStats = {};
+
+      CURRICULUM_DATA.forEach(unit => {
+        let uCorrect = 0;
+        let uAnswered = 0;
+        let uCases = 0;
+
+        unit.questions.forEach(q => {
+          if (state.answers[q.id] !== undefined) {
+            uAnswered++;
+            totalAnswered++;
+            if (state.answers[q.id] === q.correctIndex) {
+              uCorrect++;
+              totalCorrect++;
+            }
+          }
+        });
+
+        unit.cases.forEach(c => {
+          if (state.reviewedCases[c.id]) {
+            uCases++;
+            totalCasesReviewed++;
+          }
+        });
+
+        unitStats[unit.id] = {
+          correct: uCorrect,
+          answered: uAnswered,
+          totalQ: unit.questions.length,
+          casesReviewed: uCases,
+          totalC: unit.cases.length
+        };
+      });
+
+      return {
+        totalCorrect,
+        totalAnswered,
+        totalQ: 50,
+        totalCasesReviewed,
+        totalC: 25,
+        unitStats
+      };
+    }
+
+    function updateGlobalProgressUI(stats) {
+      document.getElementById('global-q-text').textContent = `${stats.totalCorrect}/${stats.totalQ}`;
+      document.getElementById('global-q-bar').style.width = `${(stats.totalCorrect / stats.totalQ) * 100}%`;
+
+      document.getElementById('global-c-text').textContent = `${stats.totalCasesReviewed}/${stats.totalC}`;
+      document.getElementById('global-c-bar').style.width = `${(stats.totalCasesReviewed / stats.totalC) * 100}%`;
+    }
+
+    // ============================================================================
+    // RENDERIZAÇÃO PRINCIPAL
+    // ============================================================================
+    function renderApp() {
+      const stats = getStats();
+      updateGlobalProgressUI(stats);
+      renderUnitNav(stats);
+
+      const currentUnit = CURRICULUM_DATA.find(u => u.id === state.activeUnit) || CURRICULUM_DATA[0];
+      const uStat = stats.unitStats[currentUnit.id];
+
+      renderUnitHeader(currentUnit, uStat);
+      renderSubTabs(currentUnit, uStat);
+      renderSubTabContent(currentUnit, uStat);
+    }
+
+    function renderUnitNav(stats) {
+      const nav = document.getElementById('unit-nav');
+      nav.innerHTML = CURRICULUM_DATA.map(unit => {
+        const isActive = unit.id === state.activeUnit;
+        const st = stats.unitStats[unit.id];
+        const allDone = st.correct === st.totalQ && st.casesReviewed === st.totalC;
+
+        return `
+          <button type="button" data-unit="${unit.id}"
+            class="unit-nav-btn shrink-0 px-3.5 py-2 rounded-xl text-left transition-all border flex items-center gap-2.5 ${
+              isActive
+                ? 'bg-sky-600 text-white border-sky-600 shadow-sm'
+                : 'bg-white dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-sky-400 dark:hover:border-sky-600'
+            }">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-extrabold tracking-wide">${unit.shortTitle}</span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                  isActive ? 'bg-sky-500/50 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300'
+                }">${unit.date}</span>
+                ${allDone ? '<span title="Unidade 100% dominada!">🏆</span>' : ''}
+              </div>
+              <div class="text-[11px] font-medium truncate max-w-[175px] ${isActive ? 'text-sky-100' : 'text-slate-500 dark:text-slate-400'}">
+                ${unit.title.replace(/^Unidade \d+:\s*/, '')}
+              </div>
+            </div>
+            <div class="text-[10px] font-mono leading-tight pl-2 border-l ${
+              isActive ? 'border-sky-400/50 text-sky-100' : 'border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'
+            }">
+              <div>${st.correct}/${st.totalQ} Q</div>
+              <div>${st.casesReviewed}/${st.totalC} C</div>
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      document.querySelectorAll('.unit-nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.activeUnit = btn.dataset.unit;
+          state.questionFilter = 'all';
+          saveState();
+          renderApp();
+        });
+      });
+    }
+
+    function renderUnitHeader(unit, uStat) {
+      const container = document.getElementById('unit-header-card');
+      const topicBadges = unit.topics.map(t => `
+        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+          ${t}
+        </span>
+      `).join('');
+
+      container.innerHTML = `
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-300">
+                Aula de ${unit.date}
+              </span>
+              <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                Cronograma Clínica Cirúrgica I • PR2
+              </span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              ${unit.title}
+            </h2>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mt-1 max-w-3xl">
+              ${unit.subtitle}
+            </p>
+            <div class="flex flex-wrap gap-1.5 mt-3">
+              ${topicBadges}
+            </div>
+          </div>
+
+          <div class="flex sm:flex-row lg:flex-col gap-2 shrink-0 bg-slate-50 dark:bg-slate-800/70 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700">
+            <div class="flex items-center justify-between gap-4 text-xs">
+              <span class="text-slate-500 dark:text-slate-400 font-medium">Acertos na Unidade:</span>
+              <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400">${uStat.correct} / ${uStat.totalQ}</span>
+            </div>
+            <div class="flex items-center justify-between gap-4 text-xs">
+              <span class="text-slate-500 dark:text-slate-400 font-medium">Casos Revisados:</span>
+              <span class="font-mono font-bold text-sky-600 dark:text-sky-400">${uStat.casesReviewed} / ${uStat.totalC}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSubTabs(unit, uStat) {
+      const nav = document.getElementById('subtab-nav');
+      const tabs = [
+        { id: 'resumo', label: '📘 Resumo Prático & Memorex' },
+        { id: 'casos', label: `🩺 Casos Clínicos (${uStat.casesReviewed}/${uStat.totalC})` },
+        { id: 'questoes', label: `📝 Exercícios de Fixação (${uStat.correct}/${uStat.totalQ})` }
+      ];
+
+      nav.innerHTML = tabs.map(tab => {
+        const active = state.activeTab === tab.id;
+        return `
+          <button type="button" data-tab="${tab.id}"
+            class="subtab-btn flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+              active
+                ? 'bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-400 shadow-sm'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+            }">
+            ${tab.label}
+          </button>
+        `;
+      }).join('');
+
+      document.querySelectorAll('.subtab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.activeTab = btn.dataset.tab;
+          saveState();
+          renderApp();
+        });
+      });
+
+      const searchBox = document.getElementById('summary-search-box');
+      if (state.activeTab === 'resumo') {
+        searchBox.classList.remove('hidden');
+      } else {
+        searchBox.classList.add('hidden');
+      }
+    }
+
+    function renderSubTabContent(unit, uStat) {
+      const area = document.getElementById('content-area');
+      area.classList.remove('animate-fade-in');
+      void area.offsetWidth; // trigger reflow
+      area.classList.add('animate-fade-in');
+
+      if (state.activeTab === 'resumo') {
+        renderSummaryTab(unit, area);
+      } else if (state.activeTab === 'casos') {
+        renderCasesTab(unit, area);
+      } else {
+        renderQuestionsTab(unit, uStat, area);
+      }
+    }
+
+    // ============================================================================
+    // ABA 1: RESUMO PRÁTICO & MEMOREX
+    // ============================================================================
+    function renderSummaryTab(unit, area) {
+      const filterTerm = (document.getElementById('summary-filter-input').value || '').trim().toLowerCase();
+
+      const badgeColors = {
+        sky: 'bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-300',
+        teal: 'bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300',
+        indigo: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300',
+        amber: 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300',
+        rose: 'bg-rose-100 text-rose-800 dark:bg-rose-900/50 dark:text-rose-300',
+        emerald: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300'
+      };
+
+      const filteredSections = unit.summarySections.filter(sec => {
+        if (!filterTerm) return true;
+        const plain = (sec.title + ' ' + sec.content.replace(/<[^>]+>/g, ' ')).toLowerCase();
+        return plain.includes(filterTerm);
+      });
+
+      if (filteredSections.length === 0) {
+        area.innerHTML = `
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 text-center">
+            <p class="text-slate-500 dark:text-slate-400 text-sm">Nenhum tópico encontrado para "<strong>${filterTerm}</strong>" nesta unidade.</p>
+          </div>
+        `;
+        return;
+      }
+
+      area.innerHTML = `
+        <div class="space-y-6">
+          ${filteredSections.map(sec => `
+            <article class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-sm">
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">${sec.title}</h3>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${badgeColors[sec.color] || badgeColors.sky}">
+                  ${sec.badge}
+                </span>
+              </div>
+              <div class="leading-relaxed">
+                ${sec.content}
+              </div>
+            </article>
+          `).join('')}
+
+          <div class="flex justify-end gap-3 pt-2 no-print">
+            <button type="button" id="go-to-cases-btn"
+              class="px-5 py-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold shadow-sm transition flex items-center gap-2">
+              <span>Avançar para os 5 Casos Clínicos</span>
+              <span>&rarr;</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      const nextBtn = document.getElementById('go-to-cases-btn');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          state.activeTab = 'casos';
+          saveState();
+          renderApp();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+    }
+
+    // ============================================================================
+    // ABA 2: CASOS CLÍNICOS (5 POR UNIDADE)
+    // ============================================================================
+    function renderCasesTab(unit, area) {
+      area.innerHTML = `
+        <div class="space-y-5">
+          ${unit.cases.map((c, idx) => {
+            const isReviewed = !!state.reviewedCases[c.id];
+            return `
+              <article class="bg-white dark:bg-slate-900 rounded-2xl border ${
+                isReviewed ? 'border-emerald-300 dark:border-emerald-800/70' : 'border-slate-200 dark:border-slate-800'
+              } p-5 sm:p-6 shadow-sm transition-all">
+                
+                <!-- Cabeçalho do Caso -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
+                  <div>
+                    <div class="flex flex-wrap items-center gap-1.5 mb-1.5">
+                      <span class="px-2.5 py-0.5 rounded-md text-xs font-extrabold bg-slate-900 text-white dark:bg-slate-700">
+                        Caso ${idx + 1} de 5
+                      </span>
+                      ${c.tags.map(tag => `
+                        <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200/70 dark:border-sky-800/60">
+                          ${tag}
+                        </span>
+                      `).join('')}
+                    </div>
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">${c.title}</h3>
+                  </div>
+
+                  <!-- Checkbox Revisado -->
+                  <label class="inline-flex items-center gap-2.5 cursor-pointer select-none px-3.5 py-2 rounded-xl border transition ${
+                    isReviewed
+                      ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300'
+                      : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  } no-print">
+                    <input type="checkbox" class="case-review-checkbox w-4 h-4 accent-emerald-600 rounded" data-case-id="${c.id}" ${isReviewed ? 'checked' : ''}>
+                    <span class="text-xs font-bold">${isReviewed ? 'Caso Revisado ✓' : 'Marcar como revisado'}</span>
+                  </label>
+                </div>
+
+                <!-- Vinheta Clínica -->
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 text-sm text-slate-800 dark:text-slate-200 leading-relaxed mb-4">
+                  <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">📋 Vinheta Clínica</div>
+                  ${c.vignette}
+                </div>
+
+                <!-- Botões Interativos de Revelação -->
+                <div class="flex flex-wrap gap-2.5 no-print">
+                  <button type="button" data-target="diag-${c.id}"
+                    class="reveal-case-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 transition flex items-center gap-2">
+                    <span>🔍</span>
+                    <span>Hipótese Diagnóstica & Raciocínio</span>
+                  </button>
+
+                  <button type="button" data-target="cond-${c.id}"
+                    class="reveal-case-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-teal-50 hover:bg-teal-100 dark:bg-teal-950/50 dark:hover:bg-teal-900/60 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800 transition flex items-center gap-2">
+                    <span>🩺</span>
+                    <span>Conduta Cirúrgica & Dica de Prova</span>
+                  </button>
+                </div>
+
+                <!-- Blocos Reveláveis -->
+                <div class="space-y-3 mt-4">
+                  <div id="diag-${c.id}" class="hidden print-expand p-4 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60 text-sm animate-fade-in">
+                    <div class="font-bold text-indigo-800 dark:text-indigo-300 mb-1">🔍 Hipótese Diagnóstica & Raciocínio Clínico</div>
+                    <p class="text-slate-800 dark:text-slate-200 leading-relaxed">${c.diagnosis}</p>
+                  </div>
+
+                  <div id="cond-${c.id}" class="hidden print-expand p-4 rounded-xl bg-teal-50/80 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800/60 text-sm animate-fade-in">
+                    <div class="font-bold text-teal-800 dark:text-teal-300 mb-1">🩺 Conduta Cirúrgica & Dica de Prova</div>
+                    <p class="text-slate-800 dark:text-slate-200 leading-relaxed">${c.conduct}</p>
+                  </div>
+                </div>
+
+              </article>
+            `;
+          }).join('')}
+
+          <div class="flex justify-end gap-3 pt-2 no-print">
+            <button type="button" id="go-to-questions-btn"
+              class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-sm transition flex items-center gap-2">
+              <span>Ir para as 10 Questões de Fixação</span>
+              <span>&rarr;</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Listeners dos botões de revelar
+      document.querySelectorAll('.reveal-case-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = document.getElementById(btn.dataset.target);
+          if (target) {
+            target.classList.toggle('hidden');
+          }
+        });
+      });
+
+      // Listeners dos checkboxes
+      document.querySelectorAll('.case-review-checkbox').forEach(chk => {
+        chk.addEventListener('change', (e) => {
+          const id = e.target.dataset.caseId;
+          state.reviewedCases[id] = e.target.checked;
+          saveState();
+          renderApp();
+          if (e.target.checked) {
+            showToast('Caso clínico marcado como revisado!', '🩺');
+          }
+        });
+      });
+
+      const nextQBtn = document.getElementById('go-to-questions-btn');
+      if (nextQBtn) {
+        nextQBtn.addEventListener('click', () => {
+          state.activeTab = 'questoes';
+          saveState();
+          renderApp();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+    }
+
+    // ============================================================================
+    // ABA 3: EXERCÍCIOS DE FIXAÇÃO (10 QUESTÕES POR UNIDADE)
+    // ============================================================================
+    function renderQuestionsTab(unit, uStat, area) {
+      const wrongCount = uStat.answered - uStat.correct;
+      const unansweredCount = uStat.totalQ - uStat.answered;
+
+      const filteredQuestions = unit.questions
+        .map((q, originalIdx) => ({ ...q, originalIdx }))
+        .filter(q => {
+          const userAns = state.answers[q.id];
+          if (state.questionFilter === 'wrong') {
+            return userAns !== undefined && userAns !== q.correctIndex;
+          }
+          if (state.questionFilter === 'unanswered') {
+            return userAns === undefined;
+          }
+          return true;
+        });
+
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+
+      area.innerHTML = `
+        <!-- Placar e Filtros da Unidade -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 mb-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4 no-print">
+          <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm">
+            <div class="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200 dark:border-emerald-800">
+              ✅ Acertos: ${uStat.correct}/${uStat.totalQ}
+            </div>
+            <div class="px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 font-bold border border-rose-200 dark:border-rose-800">
+              ❌ Erros: ${wrongCount}
+            </div>
+            <div class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold border border-slate-200 dark:border-slate-700">
+              ⏳ Pendentes: ${unansweredCount}
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" data-qfilter="all"
+              class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                state.questionFilter === 'all'
+                  ? 'bg-sky-600 text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }">
+              Todas (10)
+            </button>
+            <button type="button" data-qfilter="wrong"
+              class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                state.questionFilter === 'wrong'
+                  ? 'bg-rose-600 text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }">
+              Erradas (${wrongCount})
+            </button>
+            <button type="button" data-qfilter="unanswered"
+              class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                state.questionFilter === 'unanswered'
+                  ? 'bg-amber-600 text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }">
+              Não Respondidas (${unansweredCount})
+            </button>
+
+            <button type="button" id="reset-unit-q-btn"
+              class="ml-1 px-3 py-1.5 rounded-xl text-xs font-bold border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition">
+              Refazer Unidade
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de Questões -->
+        <div class="space-y-6">
+          ${
+            filteredQuestions.length === 0
+              ? `<div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 text-center text-sm text-slate-500 dark:text-slate-400">
+                  Nenhuma questão corresponde ao filtro selecionado.
+                </div>`
+              : filteredQuestions.map(q => {
+                  const userAns = state.answers[q.id];
+                  const isAnswered = userAns !== undefined;
+                  const isCorrect = isAnswered && userAns === q.correctIndex;
+
+                  return `
+                    <article class="bg-white dark:bg-slate-900 rounded-2xl border ${
+                      !isAnswered
+                        ? 'border-slate-200 dark:border-slate-800'
+                        : isCorrect
+                          ? 'border-emerald-300 dark:border-emerald-800/80'
+                          : 'border-rose-300 dark:border-rose-800/80'
+                    } p-5 sm:p-6 shadow-sm">
+                      
+                      <div class="flex items-center justify-between gap-2 mb-3">
+                        <span class="px-2.5 py-0.5 rounded-md text-xs font-extrabold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
+                          Questão ${q.originalIdx + 1} de 10
+                        </span>
+                        ${
+                          isAnswered
+                            ? isCorrect
+                              ? '<span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">✅ Resposta Correta</span>'
+                              : '<span class="text-xs font-bold text-rose-600 dark:text-rose-400">❌ Resposta Incorreta</span>'
+                            : '<span class="text-xs font-medium text-slate-400">Selecione uma alternativa</span>'
+                        }
+                      </div>
+
+                      <p class="text-sm sm:text-base font-semibold text-slate-900 dark:text-white leading-relaxed mb-4">
+                        ${q.question}
+                      </p>
+
+                      <div class="space-y-2.5">
+                        ${q.options.map((opt, optIdx) => {
+                          let btnClasses = 'border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 hover:bg-sky-50 dark:hover:bg-sky-950/40 hover:border-sky-300 dark:hover:border-sky-700 text-slate-800 dark:text-slate-200';
+                          let badgeClasses = 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600';
+                          let statusIcon = '';
+
+                          if (isAnswered) {
+                            if (optIdx === q.correctIndex) {
+                              btnClasses = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-100 font-medium';
+                              badgeClasses = 'bg-emerald-600 text-white border-emerald-600';
+                              statusIcon = '<span class="ml-auto text-emerald-600 dark:text-emerald-400 font-bold">✓</span>';
+                            } else if (optIdx === userAns) {
+                              btnClasses = 'border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-900 dark:text-rose-100';
+                              badgeClasses = 'bg-rose-600 text-white border-rose-600';
+                              statusIcon = '<span class="ml-auto text-rose-600 dark:text-rose-400 font-bold">✕</span>';
+                            } else {
+                              btnClasses = 'border-slate-200 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/40 text-slate-400 dark:text-slate-500 opacity-75';
+                            }
+                          }
+
+                          return `
+                            <button type="button" data-qid="${q.id}" data-opt="${optIdx}" ${isAnswered ? 'disabled' : ''}
+                              class="q-option-btn w-full text-left p-3.5 rounded-xl border transition-all flex items-start gap-3 text-sm ${btnClasses} ${isAnswered ? 'cursor-default' : 'cursor-pointer'}">
+                              <span class="w-6 h-6 rounded-lg flex items-center justify-center text-xs font-extrabold shrink-0 mt-0.5 ${badgeClasses}">
+                                ${letters[optIdx]}
+                              </span>
+                              <span class="leading-snug">${opt}</span>
+                              ${statusIcon}
+                            </button>
+                          `;
+                        }).join('')}
+                      </div>
+
+                      ${
+                        isAnswered
+                          ? `
+                            <div class="mt-4 p-4 rounded-xl bg-sky-50/90 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/70 text-sm animate-fade-in">
+                              <div class="font-bold text-sky-900 dark:text-sky-300 mb-1">💡 Comentário Explicativo (Gabarito: ${letters[q.correctIndex]})</div>
+                              <p class="text-slate-800 dark:text-slate-200 leading-relaxed">${q.explanation}</p>
+                            </div>
+                          `
+                          : ''
+                      }
+
+                    </article>
+                  `;
+                }).join('')
+          }
+        </div>
+      `;
+
+      // Listeners de resposta
+      document.querySelectorAll('.q-option-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const qid = btn.dataset.qid;
+          const opt = parseInt(btn.dataset.opt, 10);
+          if (state.answers[qid] === undefined) {
+            state.answers[qid] = opt;
+            saveState();
+            renderApp();
+          }
+        });
+      });
+
+      // Listeners de filtro
+      document.querySelectorAll('.qfilter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.questionFilter = btn.dataset.qfilter;
+          saveState();
+          renderApp();
+        });
+      });
+
+      // Listener de refazer unidade
+      const resetUnitBtn = document.getElementById('reset-unit-q-btn');
+      if (resetUnitBtn) {
+        resetUnitBtn.addEventListener('click', () => {
+          openConfirmModal(
+            `Refazer Questões — ${unit.shortTitle}`,
+            `Deseja apagar suas respostas das 10 questões da ${unit.title} para respondê-las novamente?`,
+            () => {
+              unit.questions.forEach(q => {
+                delete state.answers[q.id];
+              });
+              state.questionFilter = 'all';
+              saveState();
+              renderApp();
+              showToast(`Questões da ${unit.shortTitle} resetadas!`, '🔄');
+            }
+          );
+        });
+      }
+    }
+
+    // ============================================================================
+    // INICIALIZAÇÃO E EVENTOS GLOBAIS
+    // ============================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      applyTheme();
+      renderApp();
+
+      // Alternar Tema Claro/Escuro
+      document.getElementById('btn-theme').addEventListener('click', () => {
+        state.darkMode = !state.darkMode;
+        saveState();
+        applyTheme();
+      });
+
+      // Imprimir / Salvar PDF
+      document.getElementById('btn-print').addEventListener('click', () => {
+        window.print();
+      });
+
+      // Resetar Progresso Geral
+      document.getElementById('btn-reset-all').addEventListener('click', () => {
+        openConfirmModal(
+          'Zerar Todo o Progresso',
+          'Isso apagará todas as 50 questões respondidas e os 25 casos clínicos marcados como revisados em todas as unidades. Deseja continuar?',
+          () => {
+            state.reviewedCases = {};
+            state.answers = {};
+            state.questionFilter = 'all';
+            saveState();
+            renderApp();
+            showToast('Todo o progresso foi zerado.', '🗑️');
+          }
+        );
+      });
+
+      // Filtro de busca no resumo
+      document.getElementById('summary-filter-input').addEventListener('input', () => {
+        if (state.activeTab === 'resumo') {
+          const currentUnit = CURRICULUM_DATA.find(u => u.id === state.activeUnit) || CURRICULUM_DATA[0];
+          renderSummaryTab(currentUnit, document.getElementById('content-area'));
+        }
+      });
+
+      // Controles do Modal Customizado
+      document.getElementById('modal-cancel').addEventListener('click', closeConfirmModal);
+      document.getElementById('modal-confirm').addEventListener('click', () => {
+        if (typeof pendingModalAction === 'function') {
+          pendingModalAction();
+        }
+        closeConfirmModal();
+      });
+      document.getElementById('confirm-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'confirm-modal') {
+          closeConfirmModal();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
